@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Freeport Recovery — Bed Map</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#F0EDE8;min-height:100vh;color:#1a1a1a}
+
+/* Login */
+#login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh}
+.login-card{background:#fff;border-radius:16px;border:0.5px solid #ddd;padding:2.5rem 2rem;width:320px;text-align:center}
+.login-logo{font-size:22px;font-weight:600;margin-bottom:4px}
+.login-sub{font-size:13px;color:#666;margin-bottom:2rem}
+.login-card input{width:100%;padding:9px 12px;font-size:14px;border:0.5px solid #ccc;border-radius:8px;margin-bottom:10px;background:#f8f7f5;color:#1a1a1a}
+.login-card input:focus{outline:none;border-color:#666}
+.login-btn{width:100%;padding:9px;font-size:14px;font-weight:500;background:#1a1a1a;color:#fff;border:none;border-radius:8px;cursor:pointer}
+.login-btn:hover{background:#333}
+.login-error{font-size:12px;color:#A32D2D;margin-top:8px;min-height:18px}
+
+/* App */
+#app{display:none;max-width:900px;margin:0 auto;padding:16px}
+.card{background:#fff;border-radius:16px;border:0.5px solid #ddd;overflow:hidden;margin-bottom:16px}
+.hdr{padding:.9rem 1.25rem .65rem;border-bottom:0.5px solid #eee;display:flex;align-items:center;justify-content:space-between}
+.hdr h1{font-size:17px;font-weight:600}.hdr-sub{font-size:12px;color:#666}
+.hdr-right{display:flex;align-items:center;gap:12px}
+.logout-btn{font-size:12px;color:#888;background:none;border:none;cursor:pointer;padding:4px 8px;border-radius:6px}
+.logout-btn:hover{background:#f0ede8}
+.saved-lbl{font-size:11px;color:#888}
+.stats{display:flex;gap:10px;padding:.6rem 1.25rem;border-bottom:0.5px solid #eee}
+.stat{background:#f8f7f5;border-radius:8px;padding:7px 10px;flex:1;text-align:center}
+.stat-n{font-size:20px;font-weight:600}.stat-l{font-size:10px;color:#888;margin-top:1px}
+.stat.v .stat-n{color:#3B6D11}.stat.e .stat-n{color:#854F0B}.stat.u .stat-n{color:#A32D2D}
+.tabs{display:flex;padding:.6rem 1.25rem 0;border-bottom:0.5px solid #eee;gap:4px;flex-wrap:wrap}
+.tab{padding:6px 13px;font-size:12px;font-weight:500;cursor:pointer;border:0.5px solid #ccc;background:#f8f7f5;color:#666;border-radius:8px 8px 0 0}
+.tab.active{background:#fff;color:#1a1a1a;border-bottom:none;position:relative;bottom:-0.5px}
+.tab .badge{display:inline-block;background:#FAEEDA;color:#633806;border-radius:20px;font-size:10px;padding:0 5px;margin-left:4px}
+.tab.active .badge{background:#EAF3DE;color:#3B6D11}
+.fl{display:none;padding:.85rem 1.25rem}.fl.active{display:block}
+.legend{display:flex;gap:10px;padding:.35rem 1.25rem .5rem;flex-wrap:wrap}
+.li{display:flex;align-items:center;gap:5px;font-size:11px;color:#666}
+.ld{width:10px;height:10px;border-radius:2px}
+.rooms-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+.rc{background:#fff;border:0.5px solid #ddd;border-radius:12px;overflow:hidden}
+.rc.fd{border-color:#ED93B1}.rc.md{border-color:#85B7EB}
+.rh{padding:8px 11px;background:#f8f7f5;border-bottom:0.5px solid #eee;display:flex;align-items:center;gap:6px}
+.rc.fd .rh{background:#FBEAF0;border-bottom-color:#ED93B1}.rc.md .rh{background:#E6F1FB;border-bottom-color:#85B7EB}
+.rname{font-size:12px;font-weight:600;flex:1;min-width:0}.rsub{font-size:10px;color:#888;white-space:nowrap}
+.dorm-b{font-size:9px;font-weight:600;padding:1px 6px;border-radius:20px}
+.dorm-b.f{background:#F4C0D1;color:#72243E}.dorm-b.m{background:#B5D4F4;color:#0C447C}
+.wl-count{font-size:9px;padding:1px 6px;border-radius:20px;background:#FAEEDA;color:#633806;font-weight:600;cursor:pointer;border:none}
+.wl-count.zero{background:#f0ede8;color:#aaa}
+.beds{padding:8px}
+.bed{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:8px;cursor:pointer;border:0.5px solid transparent;margin-bottom:4px;transition:all .12s}
+.bed:last-child{margin-bottom:0}
+.bed.vacant{background:#EAF3DE;border-color:#C0DD97}.bed.occupied{background:#f8f7f5;border-color:#ddd}
+.bed.expiring{background:#FAEEDA;border-color:#FAC775}.bed.urgent{background:#FCEBEB;border-color:#F7C1C1}
+.bed:hover{transform:translateY(-1px);filter:brightness(.96)}
+.bi{width:26px;height:20px;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.bed.vacant .bi{background:#C0DD97;color:#3B6D11}.bed.occupied .bi{background:#ddd;color:#666}
+.bed.expiring .bi{background:#FAC775;color:#633806}.bed.urgent .bi{background:#F7C1C1;color:#791F1F}
+.binfo{flex:1;min-width:0}.bname{font-size:11px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bed.vacant .bname{color:#3B6D11;font-style:italic}.bed.expiring .bname{color:#633806}.bed.urgent .bname{color:#791F1F}
+.bdays{font-size:10px;color:#888;margin-top:1px}
+.bed.expiring .bdays{color:#854F0B}.bed.urgent .bdays{color:#A32D2D}
+.bid{font-size:10px;color:#bbb;flex-shrink:0}
+
+/* Modal */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;align-items:center;justify-content:center;padding:16px}
+.overlay.open{display:flex}
+.modal{background:#fff;border-radius:16px;border:0.5px solid #ddd;width:360px;max-height:90vh;overflow-y:auto}
+.mh{padding:.85rem 1.25rem .65rem;border-bottom:0.5px solid #eee;display:flex;align-items:flex-start;justify-content:space-between}
+.mh h2{font-size:15px;font-weight:600}.mh-sub{font-size:11px;color:#888;margin-top:2px}
+.mclose{background:none;border:none;font-size:18px;cursor:pointer;color:#888;line-height:1;flex-shrink:0;margin-left:8px}
+.mtabs{display:flex;padding:0 1.25rem;border-bottom:0.5px solid #eee;gap:4px;margin-top:.5rem}
+.mtab{padding:5px 12px;font-size:12px;font-weight:500;cursor:pointer;color:#888;border-bottom:2px solid transparent}
+.mtab.active{color:#1a1a1a;border-bottom-color:#1a1a1a}
+.mpanel{display:none;padding:.85rem 1.25rem}.mpanel.active{display:block}
+.fr{margin-bottom:11px}.fr label{display:block;font-size:11px;color:#666;margin-bottom:3px}
+.fr input,.fr select{width:100%;padding:6px 9px;font-size:13px;border:0.5px solid #ccc;border-radius:8px;background:#f8f7f5;color:#1a1a1a}
+.fr input:focus,.fr select:focus{outline:none;border-color:#666}
+.r2{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.cd{padding:9px;border-radius:8px;margin-bottom:12px;text-align:center}
+.cd.vac{background:#EAF3DE;border:0.5px solid #C0DD97}.cd.ok{background:#f8f7f5;border:0.5px solid #ddd}
+.cd.warn{background:#FAEEDA;border:0.5px solid #FAC775}.cd.crit{background:#FCEBEB;border:0.5px solid #F7C1C1}
+.cdn{font-size:26px;font-weight:600}
+.cd.vac .cdn{color:#3B6D11}.cd.ok .cdn{color:#1a1a1a}.cd.warn .cdn{color:#633806}.cd.crit .cdn{color:#A32D2D}
+.cdl{font-size:11px;color:#888;margin-top:2px}
+.macts{display:flex;gap:7px;margin-top:12px}
+.btn{padding:7px 12px;font-size:12px;border-radius:8px;cursor:pointer;font-weight:500;flex:1;border:0.5px solid transparent}
+.bs{background:#E6F1FB;color:#0C447C;border-color:#B5D4F4}.bs:hover{filter:brightness(.94)}
+.bc{background:#FCEBEB;color:#A32D2D;border-color:#F7C1C1}.bc:hover{filter:brightness(.94)}
+.bx{background:#f8f7f5;color:#666;border-color:#ddd}.bx:hover{background:#eee}
+.spin-btn{background:#f8f7f5;color:#666;border:0.5px solid #ddd;opacity:.6;cursor:default}
+
+/* Waitlist & client rows */
+.sex-badge{display:inline-block;padding:1px 6px;border-radius:20px;font-size:10px;font-weight:600}
+.sex-M{background:#E6F1FB;color:#0C447C}.sex-F{background:#FBEAF0;color:#72243E}.sex-NB{background:#EEEDFE;color:#3C3489}
+.wl-item{display:flex;align-items:center;gap:8px;padding:8px 10px;border:0.5px solid #eee;border-radius:8px;margin-bottom:6px;background:#f8f7f5}
+.wl-avatar{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0;background:#E6F1FB;color:#0C447C}
+.wl-avatar.f{background:#FBEAF0;color:#72243E}.wl-avatar.nb{background:#EEEDFE;color:#3C3489}
+.wl-info{flex:1;min-width:0}.wl-name{font-size:12px;font-weight:600}.wl-meta{font-size:11px;color:#888;margin-top:1px}
+.wl-rm{font-size:10px;padding:2px 7px;border-radius:20px;background:#fff;border:0.5px solid #ddd;color:#666;white-space:nowrap}
+.wl-del{background:none;border:none;cursor:pointer;color:#aaa;font-size:14px;padding:2px;line-height:1}
+.wl-del:hover{color:#A32D2D}
+.wl-empty{font-size:12px;color:#aaa;text-align:center;padding:16px 0;font-style:italic}
+.add-form{background:#f8f7f5;border:0.5px solid #eee;border-radius:12px;padding:.75rem;margin-bottom:12px}
+.add-form-title{font-size:12px;font-weight:600;color:#666;margin-bottom:10px}
+.wl-tab-section{padding:.85rem 1.25rem}
+.wl-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.wl-hdr h3{font-size:14px;font-weight:600}
+.client-row{display:flex;align-items:center;gap:10px;padding:9px 12px;border:0.5px solid #eee;border-radius:8px;margin-bottom:6px;background:#f8f7f5;cursor:pointer;transition:filter .12s}
+.client-row:hover{filter:brightness(.96)}
+.client-row.exp{border-color:#FAC775;background:#FAEEDA}
+.client-row.urg{border-color:#F7C1C1;background:#FCEBEB}
+.cr-avatar{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex-shrink:0;background:#E6F1FB;color:#0C447C}
+.cr-avatar.f{background:#FBEAF0;color:#72243E}.cr-avatar.nb{background:#EEEDFE;color:#3C3489}
+.cr-info{flex:1;min-width:0}.cr-name{font-size:13px;font-weight:600}.cr-meta{font-size:11px;color:#888;margin-top:2px}
+.cr-right{text-align:right;flex-shrink:0}.cr-room{font-size:11px;font-weight:600}.cr-days{font-size:10px;color:#888;margin-top:2px}
+.cr-right.exp .cr-days{color:#854F0B}.cr-right.urg .cr-days{color:#A32D2D}
+.clients-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.clients-hdr h3{font-size:14px;font-weight:600}
+.search-box{padding:6px 10px;font-size:12px;border:0.5px solid #ccc;border-radius:8px;background:#f8f7f5;color:#1a1a1a;width:170px}
+.search-box:focus{outline:none;border-color:#666}
+.toast{position:fixed;bottom:20px;right:20px;background:#1a1a1a;color:#fff;padding:10px 16px;border-radius:8px;font-size:13px;z-index:200;opacity:0;transition:opacity .3s;pointer-events:none}
+.toast.show{opacity:1}
+.err-banner{background:#FCEBEB;color:#A32D2D;font-size:12px;padding:8px 1.25rem;border-bottom:0.5px solid #F7C1C1;display:none}
+</style>
+</head>
+<body>
+
+<!-- Login -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">Freeport Recovery</div>
+    <div class="login-sub">Bed management system</div>
+    <input type="password" id="pw-input" placeholder="Enter password" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="login-btn" onclick="doLogin()">Sign in</button>
+    <div class="login-error" id="login-err"></div>
+  </div>
+</div>
+
+<!-- App -->
+<div id="app">
+  <div class="card">
+    <div class="hdr">
+      <div><h1>Freeport Recovery</h1><div class="hdr-sub">Click any bed or client to view and edit details</div></div>
+      <div class="hdr-right">
+        <span class="saved-lbl" id="lsaved"></span>
+        <button class="logout-btn" onclick="doLogout()"><i class="ti ti-logout"></i> Sign out</button>
+      </div>
+    </div>
+    <div class="err-banner" id="err-banner"></div>
+    <div class="stats">
+      <div class="stat"><div class="stat-n" id="st">—</div><div class="stat-l">Total beds</div></div>
+      <div class="stat v"><div class="stat-n" id="sv">—</div><div class="stat-l">Vacant</div></div>
+      <div class="stat"><div class="stat-n" id="so">—</div><div class="stat-l">Occupied</div></div>
+      <div class="stat e"><div class="stat-n" id="se">—</div><div class="stat-l">Exit ≤14 days</div></div>
+      <div class="stat u"><div class="stat-n" id="su">—</div><div class="stat-l">Exit ≤7 days</div></div>
+    </div>
+    <div class="tabs">
+      <div class="tab active" onclick="showTab('cl')">Clients</div>
+      <div class="tab" onclick="showTab('f1')">1st floor</div>
+      <div class="tab" onclick="showTab('f2')">2nd floor</div>
+      <div class="tab" onclick="showTab('f3')">3rd floor</div>
+      <div class="tab" onclick="showTab('wl')">Waiting list <span class="badge" id="wl-badge">0</span></div>
+    </div>
+    <div class="legend">
+      <div class="li"><div class="ld" style="background:#97C459"></div>Vacant</div>
+      <div class="li"><div class="ld" style="background:#B4B2A9"></div>Occupied</div>
+      <div class="li"><div class="ld" style="background:#EF9F27"></div>Exit ≤14 days</div>
+      <div class="li"><div class="ld" style="background:#E24B4A"></div>Exit ≤7 days</div>
+    </div>
+
+    <div class="fl active" id="cl">
+      <div class="wl-tab-section" style="padding:.75rem 0 0">
+        <div class="clients-hdr">
+          <h3>Current clients <span id="client-count" style="font-size:12px;font-weight:400;color:#888"></span></h3>
+          <input class="search-box" type="text" id="csearch" placeholder="Search name or room…" oninput="renderClientList()">
+        </div>
+        <div id="client-list"></div>
+      </div>
+    </div>
+    <div class="fl" id="f1"><div class="rooms-grid" id="rg1"></div></div>
+    <div class="fl" id="f2"><div class="rooms-grid" id="rg2"></div></div>
+    <div class="fl" id="f3"><div class="rooms-grid" id="rg3"></div></div>
+    <div class="fl" id="wl">
+      <div class="wl-tab-section">
+        <div class="wl-hdr"><h3>Waiting list</h3><span id="wl-total-lbl" style="font-size:12px;color:#888"></span></div>
+        <div class="add-form">
+          <div class="add-form-title"><i class="ti ti-user-plus"></i> Add to waiting list</div>
+          <div class="r2">
+            <div class="fr"><label>Name</label><input type="text" id="wn" placeholder="Full name"></div>
+            <div class="fr"><label>Age</label><input type="number" id="wa" placeholder="Age" min="1" max="120"></div>
+          </div>
+          <div class="r2">
+            <div class="fr"><label>Sex</label><select id="ws"><option value="">—</option><option value="M">Male</option><option value="F">Female</option><option value="NB">Non-binary</option></select></div>
+            <div class="fr"><label>Room preference</label><select id="wr"><option value="">Any room</option></select></div>
+          </div>
+          <div class="fr"><label>Substance of use</label><input type="text" id="wsu" placeholder="e.g. Alcohol, Opioids…"></div>
+          <div class="fr"><label>Notes</label><input type="text" id="wno" placeholder="Optional"></div>
+          <button class="btn bs" onclick="addWaiter()" style="width:100%">Add to list</button>
+        </div>
+        <div id="wl-list"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="overlay" id="overlay" onclick="closeM(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="mh">
+      <div><h2 id="mtitle">Bed</h2><div class="mh-sub" id="msubtitle"></div></div>
+      <button class="mclose" onclick="closeM()" aria-label="Close">&#x2715;</button>
+    </div>
+    <div class="mtabs">
+      <div class="mtab active" onclick="switchMTab('mc')">Client</div>
+      <div class="mtab" onclick="switchMTab('mw')">Room waitlist <span id="mwl-count" style="font-size:10px;padding:0 4px;background:#FAEEDA;color:#633806;border-radius:20px;margin-left:3px"></span></div>
+    </div>
+    <div class="mpanel active" id="mc">
+      <div class="cd ok" id="cdblock"><div class="cdn" id="cdnum">—</div><div class="cdl" id="cdlbl">days until exit</div></div>
+      <div class="fr"><label>Client name</label><input type="text" id="fn" placeholder="Full name"></div>
+      <div class="r2">
+        <div class="fr"><label>Sex</label><select id="fs"><option value="">—</option><option value="M">Male</option><option value="F">Female</option><option value="NB">Non-binary</option></select></div>
+        <div class="fr"><label>Age</label><input type="number" id="fa" placeholder="Age" min="1" max="120"></div>
+      </div>
+      <div class="fr"><label>Substance of use</label><input type="text" id="fsu" placeholder="e.g. Alcohol, Opioids…"></div>
+      <div class="r2">
+        <div class="fr"><label>Intake date</label><input type="date" id="fi"></div>
+        <div class="fr"><label>Exit date</label><input type="date" id="fe"></div>
+      </div>
+      <div class="fr"><label>Notes</label><input type="text" id="fno" placeholder="Optional notes"></div>
+      <div class="macts">
+        <button class="btn bs" id="save-btn" onclick="saveC()">Save</button>
+        <button class="btn bc" id="clear-btn" onclick="clearB()">Clear bed</button>
+        <button class="btn bx" onclick="closeM()">Cancel</button>
+      </div>
+    </div>
+    <div class="mpanel" id="mw">
+      <div class="add-form" style="margin-bottom:10px">
+        <div class="add-form-title">Add to room waitlist</div>
+        <div class="r2">
+          <div class="fr"><label>Name</label><input type="text" id="mwn" placeholder="Full name"></div>
+          <div class="fr"><label>Age</label><input type="number" id="mwa" placeholder="Age"></div>
+        </div>
+        <div class="r2">
+          <div class="fr"><label>Sex</label><select id="mws"><option value="">—</option><option value="M">Male</option><option value="F">Female</option><option value="NB">Non-binary</option></select></div>
+          <div class="fr"><label>Substance of use</label><input type="text" id="mwsu" placeholder="e.g. Alcohol"></div>
+        </div>
+        <div class="fr"><label>Notes</label><input type="text" id="mwno" placeholder="Optional"></div>
+        <button class="btn bs" onclick="addWaiterFromModal()" style="width:100%">Add to waitlist</button>
+      </div>
+      <div id="modal-wl-list"></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const FLOORS={
+  1:[
+    {id:'RM 101',name:'101 Merritt',       dorm:null,    beds:['101-A','101-B']},
+    {id:'RM 102',name:'102 Shickluna',     dorm:null,    beds:['102-A']},
+    {id:'RM 103',name:'103 Richardson',    dorm:'female',beds:['103-A','103-B','103-C']},
+  ],
+  2:[
+    {id:'RM 201',name:'201 Mary Catharine',dorm:null,    beds:['201-A','201-B']},
+    {id:'RM 202',name:'202 Loyalist',      dorm:null,    beds:['202-A','202-B']},
+    {id:'RM 203',name:'203 Greyhound',     dorm:null,    beds:['203-A','203-B']},
+    {id:'RM 204',name:'204 Secord',        dorm:null,    beds:['204-A']},
+    {id:'RM 205',name:'205 White Cedar',   dorm:'male',  beds:['205-A','205-B','205-C','205-D']},
+  ],
+  3:[
+    {id:'RM 301',name:'301 Tiffany',       dorm:null,    beds:['301-A']},
+    {id:'RM 302',name:'1812 Suite',        dorm:null,    beds:['302-A','302-B']},
+    {id:'RM 303',name:'303 Grantham',      dorm:null,    beds:['303-A']},
+    {id:'RM 304',name:'304 Ridley',        dorm:null,    beds:['304-A','304-B']},
+  ]
+};
+const allRooms=Object.values(FLOORS).flat();
+function roomById(id){return allRooms.find(r=>r.id===id);}
+function roomForBed(bedId){return allRooms.find(r=>r.beds.includes(bedId));}
+
+let clients={}, waitlist=[], activeBed=null, activeRoomId=null;
+let pw='';
+
+// --- Auth ---
+function doLogin(){
+  const p=document.getElementById('pw-input').value;
+  if(!p){document.getElementById('login-err').textContent='Enter a password';return;}
+  fetch('/api/auth',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:p})})
+    .then(r=>r.json()).then(d=>{
+      if(d.ok){
+        pw=p;
+        sessionStorage.setItem('fp_pw',p);
+        document.getElementById('login-screen').style.display='none';
+        document.getElementById('app').style.display='block';
+        loadAll();
+      } else {
+        document.getElementById('login-err').textContent='Incorrect password';
+      }
+    }).catch(()=>document.getElementById('login-err').textContent='Could not connect to server');
+}
+function doLogout(){
+  pw='';sessionStorage.removeItem('fp_pw');
+  document.getElementById('login-screen').style.display='flex';
+  document.getElementById('app').style.display='none';
+  document.getElementById('pw-input').value='';
+}
+function apiFetch(url,opts={}){
+  opts.headers={...opts.headers,'x-password':pw,'Content-Type':'application/json'};
+  return fetch(url,opts).then(r=>{
+    if(r.status===401){doLogout();throw new Error('Session expired');}
+    return r.json();
+  });
+}
+
+// --- Data ---
+function loadAll(){
+  Promise.all([
+    apiFetch('/api/clients'),
+    apiFetch('/api/waitlist'),
+  ]).then(([c,w])=>{
+    clients=c||{};
+    waitlist=w||[];
+    renderAll();
+    hideErr();
+  }).catch(e=>showErr('Failed to load data: '+e.message));
+}
+
+function tod(){return new Date().toISOString().slice(0,10);}
+function dUntil(s){if(!s)return null;return Math.round((new Date(s)-new Date(tod()))/(864e5));}
+function bStatus(id){
+  const c=clients[id];if(!c||!c.name)return'vacant';
+  const d=dUntil(c.exit);if(d===null)return'occupied';
+  return d<=7?'urgent':d<=14?'expiring':'occupied';
+}
+function initials(name){const p=name.trim().split(' ');return(p[0][0]+(p[1]?p[1][0]:'')).toUpperCase();}
+
+function showErr(msg){const b=document.getElementById('err-banner');b.textContent=msg;b.style.display='block';}
+function hideErr(){document.getElementById('err-banner').style.display='none';}
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+function setSaving(saving){
+  document.getElementById('save-btn').className='btn '+(saving?'spin-btn':'bs');
+  document.getElementById('save-btn').textContent=saving?'Saving…':'Save';
+}
+
+function populateRoomDropdown(){
+  const sel=document.getElementById('wr');
+  sel.innerHTML='<option value="">Any room</option>';
+  allRooms.forEach(r=>sel.innerHTML+=`<option value="${r.id}">${r.name}</option>`);
+}
+
+function renderAll(){
+  renderClientList();
+  [1,2,3].forEach(f=>{
+    const cont=document.getElementById('rg'+f);cont.innerHTML='';
+    FLOORS[f].forEach(room=>{
+      const occ=room.beds.filter(b=>bStatus(b)!=='vacant').length;
+      const wc=waitlist.filter(w=>w.room===room.id).length;
+      let dc='',db='';
+      if(room.dorm==='female'){dc=' fd';db='<span class="dorm-b f">Female dorm</span>';}
+      if(room.dorm==='male'){dc=' md';db='<span class="dorm-b m">Male dorm</span>';}
+      const wcBadge=`<button class="wl-count${wc===0?' zero':''}" onclick="openModalWl('${room.id}',event)"><i class="ti ti-clock"></i> ${wc}</button>`;
+      const card=document.createElement('div');
+      card.className='rc'+dc;
+      card.innerHTML=`<div class="rh"><div class="rname">${room.name}${db?'&nbsp;'+db:''}</div>${wcBadge}<span class="rsub">${occ}/${room.beds.length}</span></div><div class="beds">${room.beds.map(b=>renderBed(b)).join('')}</div>`;
+      cont.appendChild(card);
+    });
+  });
+  renderWaitlistTab();
+  updateStats();
+  document.getElementById('wl-badge').textContent=waitlist.length;
+}
+
+function renderClientList(){
+  const q=(document.getElementById('csearch').value||'').toLowerCase();
+  const entries=[];
+  allRooms.forEach(room=>{
+    room.beds.forEach(bedId=>{
+      const c=clients[bedId];
+      if(!c||!c.name)return;
+      if(q&&!c.name.toLowerCase().includes(q)&&!room.name.toLowerCase().includes(q)&&!(c.substance||'').toLowerCase().includes(q))return;
+      entries.push({bedId,c,room});
+    });
+  });
+  document.getElementById('client-count').textContent=entries.length?`— ${entries.length} client${entries.length!==1?'s':''}  `:'';
+  const list=document.getElementById('client-list');
+  if(!entries.length){list.innerHTML=`<div class="wl-empty">${q?'No clients match that search':'No clients currently admitted'}</div>`;return;}
+  list.innerHTML=entries.map(({bedId,c,room})=>{
+    const st=bStatus(bedId);const d=dUntil(c.exit);
+    const rowCls=st==='urgent'?' urg':st==='expiring'?' exp':'';
+    const rtCls=st==='urgent'?' urg':st==='expiring'?' exp':'';
+    let daysStr='';
+    if(d!==null) daysStr=d<0?`Exited ${Math.abs(d)}d ago`:d===0?'Exits today':`${d} days left`;
+    const avatarCls=c.sex==='F'?' f':c.sex==='NB'?' nb':'';
+    const sexBadge=c.sex?`<span class="sex-badge sex-${c.sex}">${c.sex}</span> `:'';
+    return `<div class="client-row${rowCls}" onclick="openM('${bedId}')">
+      <div class="cr-avatar${avatarCls}">${initials(c.name)}</div>
+      <div class="cr-info">
+        <div class="cr-name">${sexBadge}${c.name}${c.age?', '+c.age:''}</div>
+        <div class="cr-meta">${c.substance||'<span style="color:#bbb;font-style:italic">Substance not listed</span>'}${c.intake?' · In: '+c.intake:''}</div>
+      </div>
+      <div class="cr-right${rtCls}">
+        <div class="cr-room">${room.name}</div>
+        <div class="cr-days">${daysStr}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderBed(bedId){
+  const st=bStatus(bedId);const c=clients[bedId];
+  let nm='<span class="bname">Vacant</span>',dy='';
+  if(c&&c.name){
+    nm=`<span class="bname">${c.name}</span>`;
+    const d=dUntil(c.exit);
+    if(d!==null) dy=`<div class="bdays">${d<0?'Exited '+Math.abs(d)+'d ago':d===0?'Exits today':d+' days left'}</div>`;
+    else if(c.intake) dy=`<div class="bdays">Since ${c.intake}</div>`;
+  }
+  const icon=st==='vacant'?'ti-bed':'ti-user';
+  return `<div class="bed ${st}" onclick="openM('${bedId}')" role="button" tabindex="0">
+    <div class="bi"><i class="ti ${icon}"></i></div>
+    <div class="binfo">${nm}${dy}</div>
+    <div class="bid">${bedId}</div>
+  </div>`;
+}
+
+function renderWaitlistTab(){
+  const list=document.getElementById('wl-list');
+  document.getElementById('wl-total-lbl').textContent=waitlist.length+' person'+(waitlist.length!==1?'s':'')+' waiting';
+  if(!waitlist.length){list.innerHTML='<div class="wl-empty">No one on the waiting list yet</div>';return;}
+  list.innerHTML=waitlist.map(w=>{
+    const rm=w.room?roomById(w.room):null;
+    const sexBadge=w.sex?`<span class="sex-badge sex-${w.sex}">${w.sex}</span> `:'';
+    const avatarCls=w.sex==='F'?' f':w.sex==='NB'?' nb':'';
+    return `<div class="wl-item">
+      <div class="wl-avatar${avatarCls}">${initials(w.name)}</div>
+      <div class="wl-info">
+        <div class="wl-name">${sexBadge}${w.name}${w.age?', age '+w.age:''}</div>
+        <div class="wl-meta">${w.substance||'Substance not listed'}${w.notes?' · '+w.notes:''}</div>
+      </div>
+      <span class="wl-rm">${rm?rm.name:'Any room'}</span>
+      <button class="wl-del" onclick="removeWaiter(${w.id})" aria-label="Remove"><i class="ti ti-x"></i></button>
+    </div>`;
+  }).join('');
+}
+
+function renderModalWaitlist(roomId){
+  const items=waitlist.filter(w=>w.room===roomId);
+  document.getElementById('mwl-count').textContent=items.length||'';
+  const list=document.getElementById('modal-wl-list');
+  if(!items.length){list.innerHTML='<div class="wl-empty">No one waiting for this room</div>';return;}
+  list.innerHTML=items.map(w=>{
+    const sexBadge=w.sex?`<span class="sex-badge sex-${w.sex}">${w.sex}</span> `:'';
+    const avatarCls=w.sex==='F'?' f':w.sex==='NB'?' nb':'';
+    return `<div class="wl-item">
+      <div class="wl-avatar${avatarCls}">${initials(w.name)}</div>
+      <div class="wl-info">
+        <div class="wl-name">${sexBadge}${w.name}${w.age?', age '+w.age:''}</div>
+        <div class="wl-meta">${w.substance||'Substance not listed'}${w.notes?' · '+w.notes:''}</div>
+      </div>
+      <button class="wl-del" onclick="removeWaiterModal(${w.id},'${roomId}')" aria-label="Remove"><i class="ti ti-x"></i></button>
+    </div>`;
+  }).join('');
+}
+
+function updateStats(){
+  const all=allRooms.flatMap(r=>r.beds);
+  let v=0,o=0,e=0,u=0;
+  all.forEach(b=>{const s=bStatus(b);if(s==='vacant')v++;else o++;if(s==='expiring')e++;if(s==='urgent'){u++;e++;}});
+  document.getElementById('st').textContent=all.length;
+  document.getElementById('sv').textContent=v;
+  document.getElementById('so').textContent=o;
+  document.getElementById('se').textContent=e;
+  document.getElementById('su').textContent=u;
+}
+
+function showTab(id){
+  document.querySelectorAll('.fl').forEach(f=>f.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  const idx={cl:0,f1:1,f2:2,f3:3,wl:4}[id];
+  document.querySelectorAll('.tab')[idx].classList.add('active');
+}
+
+function openM(bedId){
+  activeBed=bedId;activeRoomId=null;
+  const room=roomForBed(bedId);
+  document.getElementById('mtitle').textContent='Bed '+bedId;
+  document.getElementById('msubtitle').textContent=room?room.name:'';
+  const c=clients[bedId]||{};
+  document.getElementById('fn').value=c.name||'';
+  document.getElementById('fs').value=c.sex||'';
+  document.getElementById('fa').value=c.age||'';
+  document.getElementById('fsu').value=c.substance||'';
+  document.getElementById('fi').value=c.intake||'';
+  document.getElementById('fe').value=c.exit||'';
+  document.getElementById('fno').value=c.notes||'';
+  updCD(c);switchMTab('mc');
+  if(room) renderModalWaitlist(room.id);
+  document.getElementById('overlay').classList.add('open');
+  setTimeout(()=>document.getElementById('fn').focus(),50);
+}
+
+function openModalWl(roomId,ev){
+  if(ev) ev.stopPropagation();
+  const room=roomById(roomId);if(!room)return;
+  activeBed=null;activeRoomId=roomId;
+  document.getElementById('mtitle').textContent=room.name;
+  document.getElementById('msubtitle').textContent='Room waitlist';
+  switchMTab('mw');renderModalWaitlist(roomId);
+  document.getElementById('overlay').classList.add('open');
+}
+
+function switchMTab(id){
+  document.querySelectorAll('.mtab').forEach((t,i)=>t.classList.toggle('active',['mc','mw'][i]===id));
+  document.querySelectorAll('.mpanel').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function updCD(c){
+  const bl=document.getElementById('cdblock'),nu=document.getElementById('cdnum'),lb=document.getElementById('cdlbl');
+  bl.className='cd';
+  if(!c||!c.name){bl.classList.add('vac');nu.textContent='—';lb.textContent='Bed is vacant';return;}
+  const d=dUntil(c.exit);
+  if(d===null){bl.classList.add('ok');nu.textContent='—';lb.textContent='No exit date set';return;}
+  nu.textContent=d<0?'Overdue':d===0?'Today!':d;
+  lb.textContent=d<0?Math.abs(d)+' days past exit date':d===0?'Exit is today':'days until exit';
+  bl.classList.add(d<=7?'crit':d<=14?'warn':'ok');
+}
+document.getElementById('fe').addEventListener('input',function(){updCD({name:document.getElementById('fn').value,exit:this.value});});
+
+function closeM(e){
+  if(e&&e.target!==document.getElementById('overlay'))return;
+  document.getElementById('overlay').classList.remove('open');activeBed=null;activeRoomId=null;
+}
+
+function saveC(){
+  if(!activeBed)return;
+  const name=document.getElementById('fn').value.trim();
+  const data=name?{name,sex:document.getElementById('fs').value,age:document.getElementById('fa').value,substance:document.getElementById('fsu').value.trim(),intake:document.getElementById('fi').value,exit:document.getElementById('fe').value,notes:document.getElementById('fno').value.trim()}:{};
+  setSaving(true);
+  apiFetch(`/api/clients/${encodeURIComponent(activeBed)}`,{method:'PUT',body:JSON.stringify(data)})
+    .then(()=>{
+      clients[activeBed]=data;
+      setSaving(false);
+      renderAll();
+      document.getElementById('overlay').classList.remove('open');
+      document.getElementById('lsaved').textContent='Saved '+new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+      showToast('Client saved');
+    }).catch(e=>{setSaving(false);showErr('Save failed: '+e.message);});
+}
+
+function clearB(){
+  if(!activeBed)return;
+  if(!confirm('Clear this bed? This will remove the client record.'))return;
+  apiFetch(`/api/clients/${encodeURIComponent(activeBed)}`,{method:'PUT',body:JSON.stringify({})})
+    .then(()=>{
+      clients[activeBed]={};renderAll();
+      document.getElementById('overlay').classList.remove('open');
+      showToast('Bed cleared');
+    }).catch(e=>showErr('Error: '+e.message));
+}
+
+function addWaiter(){
+  const name=document.getElementById('wn').value.trim();if(!name)return;
+  const data={name,age:document.getElementById('wa').value,sex:document.getElementById('ws').value,substance:document.getElementById('wsu').value.trim(),notes:document.getElementById('wno').value.trim(),room:document.getElementById('wr').value};
+  apiFetch('/api/waitlist',{method:'POST',body:JSON.stringify(data)})
+    .then(d=>{
+      waitlist.push({...data,id:d.id});
+      ['wn','wa','wsu','wno'].forEach(id=>document.getElementById(id).value='');
+      document.getElementById('ws').value='';document.getElementById('wr').value='';
+      renderAll();showToast('Added to waiting list');
+    }).catch(e=>showErr('Error: '+e.message));
+}
+
+function addWaiterFromModal(){
+  const name=document.getElementById('mwn').value.trim();if(!name)return;
+  const roomId=activeRoomId||(activeBed?roomForBed(activeBed)?.id:'');
+  const data={name,age:document.getElementById('mwa').value,sex:document.getElementById('mws').value,substance:document.getElementById('mwsu').value.trim(),notes:document.getElementById('mwno').value.trim(),room:roomId||''};
+  apiFetch('/api/waitlist',{method:'POST',body:JSON.stringify(data)})
+    .then(d=>{
+      waitlist.push({...data,id:d.id});
+      ['mwn','mwa','mwsu','mwno'].forEach(id=>document.getElementById(id).value='');
+      document.getElementById('mws').value='';
+      renderAll();
+      if(roomId) renderModalWaitlist(roomId);
+      showToast('Added to waitlist');
+    }).catch(e=>showErr('Error: '+e.message));
+}
+
+function removeWaiter(id){
+  apiFetch(`/api/waitlist/${id}`,{method:'DELETE'})
+    .then(()=>{waitlist=waitlist.filter(w=>w.id!==id);renderAll();})
+    .catch(e=>showErr('Error: '+e.message));
+}
+
+function removeWaiterModal(id,roomId){
+  apiFetch(`/api/waitlist/${id}`,{method:'DELETE'})
+    .then(()=>{waitlist=waitlist.filter(w=>w.id!==id);renderAll();renderModalWaitlist(roomId);})
+    .catch(e=>showErr('Error: '+e.message));
+}
+
+document.addEventListener('keydown',e=>{if(e.key==='Escape')document.getElementById('overlay').classList.remove('open');});
+
+// Auto-login if session still has password
+const savedPw=sessionStorage.getItem('fp_pw');
+if(savedPw){
+  fetch('/api/auth',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:savedPw})})
+    .then(r=>r.json()).then(d=>{
+      if(d.ok){
+        pw=savedPw;
+        document.getElementById('login-screen').style.display='none';
+        document.getElementById('app').style.display='block';
+        loadAll();
+      }
+    }).catch(()=>{});
+}
+
+populateRoomDropdown();
+</script>
+</body>
+</html>
