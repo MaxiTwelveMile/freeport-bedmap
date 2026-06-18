@@ -5,6 +5,7 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3000;
 const PASSWORD = process.env.APP_PASSWORD || 'freeport2024';
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'freeportadmin2024';
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
@@ -14,9 +15,17 @@ const pool = new Pool({
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Staff and admin can read
 function auth(req, res, next) {
-  if (req.headers['x-password'] === PASSWORD) return next();
+  const p = req.headers['x-password'];
+  if (p === PASSWORD || p === ADMIN_PASSWORD) return next();
   res.status(401).json({ error: 'Unauthorized' });
+}
+
+// Only admin can write
+function adminAuth(req, res, next) {
+  if (req.headers['x-password'] === ADMIN_PASSWORD) return next();
+  res.status(403).json({ error: 'Admin access required' });
 }
 
 async function initDB() {
@@ -65,7 +74,7 @@ app.get('/api/clients', auth, async (req, res) => {
   }
 });
 
-app.put('/api/clients/:bedId', auth, async (req, res) => {
+app.put('/api/clients/:bedId', adminAuth, async (req, res) => {
   const { bedId } = req.params;
   const { name, sex, age, substance, intake, exit, notes } = req.body;
   try {
@@ -100,7 +109,7 @@ app.get('/api/waitlist', auth, async (req, res) => {
   }
 });
 
-app.post('/api/waitlist', auth, async (req, res) => {
+app.post('/api/waitlist', adminAuth, async (req, res) => {
   const { name, sex, age, substance, notes, room } = req.body;
   try {
     const { rows } = await pool.query(
@@ -113,7 +122,7 @@ app.post('/api/waitlist', auth, async (req, res) => {
   }
 });
 
-app.delete('/api/waitlist/:id', auth, async (req, res) => {
+app.delete('/api/waitlist/:id', adminAuth, async (req, res) => {
   try {
     await pool.query('DELETE FROM waitlist WHERE id = $1', [req.params.id]);
     res.json({ ok: true });
@@ -122,10 +131,11 @@ app.delete('/api/waitlist/:id', auth, async (req, res) => {
   }
 });
 
-// Verify password endpoint (used by login screen)
+// Verify password endpoint — returns role so frontend can adjust UI
 app.post('/api/auth', (req, res) => {
   const { password } = req.body;
-  if (password === PASSWORD) res.json({ ok: true });
+  if (password === ADMIN_PASSWORD) res.json({ ok: true, role: 'admin' });
+  else if (password === PASSWORD) res.json({ ok: true, role: 'staff' });
   else res.status(401).json({ error: 'Wrong password' });
 });
 

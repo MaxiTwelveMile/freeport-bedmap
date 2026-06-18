@@ -146,7 +146,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <div id="app">
   <div class="card">
     <div class="hdr">
-      <div><h1>Freeport Recovery</h1><div class="hdr-sub">Click any bed or client to view and edit details</div></div>
+      <div><h1>Freeport Recovery</h1><div class="hdr-sub" id="hdr-sub">Click any bed or client to view and edit details</div></div>
       <div class="hdr-right">
         <span class="saved-lbl" id="lsaved"></span>
         <button class="logout-btn" onclick="doLogout()"><i class="ti ti-logout"></i> Sign out</button>
@@ -189,7 +189,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <div class="fl" id="wl">
       <div class="wl-tab-section">
         <div class="wl-hdr"><h3>Waiting list</h3><span id="wl-total-lbl" style="font-size:12px;color:#888"></span></div>
-        <div class="add-form">
+        <div class="add-form admin-only">
           <div class="add-form-title"><i class="ti ti-user-plus"></i> Add to waiting list</div>
           <div class="r2">
             <div class="fr"><label>Name</label><input type="text" id="wn" placeholder="Full name"></div>
@@ -234,13 +234,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       </div>
       <div class="fr"><label>Notes</label><input type="text" id="fno" placeholder="Optional notes"></div>
       <div class="macts">
-        <button class="btn bs" id="save-btn" onclick="saveC()">Save</button>
-        <button class="btn bc" id="clear-btn" onclick="clearB()">Clear bed</button>
-        <button class="btn bx" onclick="closeM()">Cancel</button>
+        <button class="btn bs admin-only" id="save-btn" onclick="saveC()">Save</button>
+        <button class="btn bc admin-only" id="clear-btn" onclick="clearB()">Clear bed</button>
+        <button class="btn bx" onclick="closeM()">Close</button>
       </div>
     </div>
     <div class="mpanel" id="mw">
-      <div class="add-form" style="margin-bottom:10px">
+      <div class="add-form admin-only" style="margin-bottom:10px">
         <div class="add-form-title">Add to room waitlist</div>
         <div class="r2">
           <div class="fr"><label>Name</label><input type="text" id="mwn" placeholder="Full name"></div>
@@ -286,7 +286,21 @@ function roomById(id){return allRooms.find(r=>r.id===id);}
 function roomForBed(bedId){return allRooms.find(r=>r.beds.includes(bedId));}
 
 let clients={}, waitlist=[], activeBed=null, activeRoomId=null;
-let pw='';
+let pw='', role='staff';
+
+function isAdmin(){return role==='admin';}
+
+function applyRole(){
+  const admin=isAdmin();
+  // Header subtitle
+  document.getElementById('hdr-sub').textContent=admin?'Click any bed or client to view and edit details':'Click any bed or client to view details (view only)';
+  // Admin-only elements: add forms, delete buttons, save/clear buttons
+  document.querySelectorAll('.admin-only').forEach(el=>el.style.display=admin?'':'none');
+  // Modal fields: readonly for staff
+  document.querySelectorAll('#mc input, #mc select').forEach(el=>{
+    el.disabled=!admin;
+  });
+}
 
 // --- Auth ---
 function doLogin(){
@@ -295,10 +309,11 @@ function doLogin(){
   fetch('/api/auth',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:p})})
     .then(r=>r.json()).then(d=>{
       if(d.ok){
-        pw=p;
+        pw=p; role=d.role||'staff';
         sessionStorage.setItem('fp_pw',p);
         document.getElementById('login-screen').style.display='none';
         document.getElementById('app').style.display='block';
+        applyRole();
         loadAll();
       } else {
         document.getElementById('login-err').textContent='Incorrect password';
@@ -445,7 +460,7 @@ function renderWaitlistTab(){
         <div class="wl-meta">${w.substance||'Substance not listed'}${w.notes?' · '+w.notes:''}</div>
       </div>
       <span class="wl-rm">${rm?rm.name:'Any room'}</span>
-      <button class="wl-del" onclick="removeWaiter(${w.id})" aria-label="Remove"><i class="ti ti-x"></i></button>
+      ${isAdmin()?`<button class="wl-del" onclick="removeWaiter(${w.id})" aria-label="Remove"><i class="ti ti-x"></i></button>`:''}
     </div>`;
   }).join('');
 }
@@ -464,7 +479,7 @@ function renderModalWaitlist(roomId){
         <div class="wl-name">${sexBadge}${w.name}${w.age?', age '+w.age:''}</div>
         <div class="wl-meta">${w.substance||'Substance not listed'}${w.notes?' · '+w.notes:''}</div>
       </div>
-      <button class="wl-del" onclick="removeWaiterModal(${w.id},'${roomId}')" aria-label="Remove"><i class="ti ti-x"></i></button>
+      ${isAdmin()?`<button class="wl-del" onclick="removeWaiterModal(${w.id},'${roomId}')" aria-label="Remove"><i class="ti ti-x"></i></button>`:''}
     </div>`;
   }).join('');
 }
@@ -614,9 +629,10 @@ if(savedPw){
   fetch('/api/auth',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:savedPw})})
     .then(r=>r.json()).then(d=>{
       if(d.ok){
-        pw=savedPw;
+        pw=savedPw; role=d.role||'staff';
         document.getElementById('login-screen').style.display='none';
         document.getElementById('app').style.display='block';
+        applyRole();
         loadAll();
       }
     }).catch(()=>{});
