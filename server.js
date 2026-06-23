@@ -151,6 +151,19 @@ app.post('/api/waitlist', adminAuth, async (req, res) => {
   }
 });
 
+app.put('/api/waitlist/:id', adminAuth, async (req, res) => {
+  const { name, sex, age, substance, notes, room } = req.body;
+  try {
+    await pool.query(
+      'UPDATE waitlist SET name=$1, sex=$2, age=$3, substance=$4, notes=$5, room_id=$6 WHERE id=$7',
+      [name, sex||null, age||null, substance||null, notes||null, room||null, req.params.id]
+    );
+    res.json({ ok: true });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
 app.delete('/api/waitlist/:id', adminAuth, async (req, res) => {
   try {
     await pool.query('DELETE FROM waitlist WHERE id = $1', [req.params.id]);
@@ -185,11 +198,11 @@ app.post('/api/virtual', adminAuth, async (req, res) => {
 });
 
 app.put('/api/virtual/:id', adminAuth, async (req, res) => {
-  const { course, counsellor } = req.body;
+  const { name, course, counsellor } = req.body;
   try {
     await pool.query(
-      'UPDATE virtual_clients SET course=$1, counsellor=$2 WHERE id=$3',
-      [course||null, counsellor||null, req.params.id]
+      'UPDATE virtual_clients SET name=COALESCE($1,name), course=$2, counsellor=$3 WHERE id=$4',
+      [name||null, course||null, counsellor||null, req.params.id]
     );
     res.json({ ok: true });
   } catch (e) {
@@ -231,11 +244,11 @@ app.post('/api/family', adminAuth, async (req, res) => {
 });
 
 app.put('/api/family/:id', adminAuth, async (req, res) => {
-  const { client_association, therapist, connected } = req.body;
+  const { name, client_association, therapist, connected } = req.body;
   try {
     await pool.query(
-      'UPDATE family_support SET client_association=$1, therapist=$2, connected=$3 WHERE id=$4',
-      [client_association||null, therapist||null, connected||'Pending', req.params.id]
+      'UPDATE family_support SET name=COALESCE($1,name), client_association=$2, therapist=$3, connected=$4 WHERE id=$5',
+      [name||null, client_association||null, therapist||null, connected||'Pending', req.params.id]
     );
     res.json({ ok: true });
   } catch (e) {
@@ -272,6 +285,14 @@ app.post('/api/incoming', adminAuth, async (req, res) => {
   try {
     const { rows } = await pool.query('INSERT INTO incoming_clients (name) VALUES ($1) RETURNING id', [name]);
     res.json({ id: rows[0].id });
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.put('/api/incoming/:id', adminAuth, async (req, res) => {
+  const { name } = req.body;
+  try {
+    await pool.query('UPDATE incoming_clients SET name=$1 WHERE id=$2', [name, req.params.id]);
+    res.json({ ok: true });
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
 

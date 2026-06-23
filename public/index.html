@@ -103,6 +103,20 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .wl-rm{font-size:10px;padding:2px 7px;border-radius:20px;background:#fff;border:0.5px solid #ddd;color:#666;white-space:nowrap}
 .wl-del{background:none;border:none;cursor:pointer;color:#aaa;font-size:14px;padding:2px;line-height:1}
 .wl-del:hover{color:#A32D2D}
+.wl-editable{align-items:flex-start!important;padding:12px 14px!important;gap:10px}
+.wl-edit-fields{flex:1;display:flex;flex-direction:column;gap:6px;min-width:0}
+.wl-einput{background:#f4f5f7;border:1px solid #e0e4ea;border-radius:6px;padding:5px 8px;font-size:13px;width:100%;box-sizing:border-box;font-family:inherit}
+.wl-einput:focus{outline:none;border-color:#4f8ef7;background:#fff}
+.wl-einput:disabled{cursor:default;background:transparent;border-color:transparent;color:#222}
+.wl-ename{font-weight:600;font-size:14px}
+.wl-esm{width:70px;flex-shrink:0}
+.wl-esel{background:#f4f5f7;border:1px solid #e0e4ea;border-radius:6px;padding:5px 8px;font-size:13px;font-family:inherit}
+.wl-esel:disabled{cursor:default;background:transparent;border-color:transparent;color:#555}
+.wl-edit-row{display:flex;gap:6px;align-items:center}
+.virt-name-input{font-weight:600;font-size:15px;flex:1;min-width:0}
+.ic-name-input{background:transparent;border:1px solid transparent;border-radius:6px;padding:3px 6px;font-size:14px;font-weight:600;color:#222;font-family:inherit;width:100%;box-sizing:border-box}
+.ic-name-input:focus{outline:none;border-color:#4f8ef7;background:#fff}
+.ic-name-input:disabled{cursor:default;color:#222}
 .wl-empty{font-size:12px;color:#aaa;text-align:center;padding:16px 0;font-style:italic}
 .add-form{background:#f8f7f5;border:0.5px solid #eee;border-radius:12px;padding:.75rem;margin-bottom:12px}
 .add-form-title{font-size:12px;font-weight:600;color:#666;margin-bottom:10px}
@@ -510,6 +524,8 @@ function bStatus(id){
   return d<=7?'urgent':d<=14?'expiring':'occupied';
 }
 function initials(name){const p=name.trim().split(' ');return(p[0][0]+(p[1]?p[1][0]:'')).toUpperCase();}
+function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;');}
+function roomOptions(sel){return'<option value="">Any room</option>'+allRooms.map(r=>`<option value="${r.id}"${r.id===sel?' selected':''}>${r.name}</option>`).join('');}
 function showErr(msg){const b=document.getElementById('err-banner');b.textContent=msg;b.style.display='block';}
 function hideErr(){document.getElementById('err-banner').style.display='none';}
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200);}
@@ -604,16 +620,39 @@ function renderWaitlistTab(){
   document.getElementById('wl-total-lbl').textContent=waitlist.length+' person'+(waitlist.length!==1?'s':'')+' waiting';
   if(!waitlist.length){list.innerHTML='<div class="wl-empty">No one on the waiting list yet</div>';return;}
   list.innerHTML=waitlist.map(w=>{
-    const rm=w.room?roomById(w.room):null;
-    const sexBadge=w.sex?`<span class="sex-badge sex-${w.sex}">${w.sex}</span> `:'';
     const avatarCls=w.sex==='F'?' f':w.sex==='NB'?' nb':'';
-    return `<div class="wl-item">
-      <div class="wl-avatar${avatarCls}">${initials(w.name)}</div>
-      <div class="wl-info"><div class="wl-name">${sexBadge}${w.name}${w.age?', age '+w.age:''}</div><div class="wl-meta">${w.substance||'Substance not listed'}${w.notes?' · '+w.notes:''}</div></div>
-      <span class="wl-rm">${rm?rm.name:'Any room'}</span>
-      ${isAdmin()?`<button class="wl-del" onclick="removeWaiter(${w.id})" aria-label="Remove"><i class="ti ti-x"></i></button>`:''}
+    const dis=isAdmin()?'':'disabled';
+    return `<div class="wl-item wl-editable">
+      <div class="wl-avatar${avatarCls}" style="align-self:flex-start;margin-top:4px">${initials(w.name)}</div>
+      <div class="wl-edit-fields">
+        <input class="wl-einput wl-ename" type="text" value="${esc(w.name)}" placeholder="Name…" ${dis}
+          onblur="saveWaiter(${w.id},'name',this.value)">
+        <div class="wl-edit-row">
+          <select class="wl-esel" ${dis} onchange="saveWaiter(${w.id},'sex',this.value)">
+            <option value="" ${!w.sex?'selected':''}>Sex…</option>
+            <option value="M" ${w.sex==='M'?'selected':''}>M</option>
+            <option value="F" ${w.sex==='F'?'selected':''}>F</option>
+            <option value="NB" ${w.sex==='NB'?'selected':''}>NB</option>
+          </select>
+          <input class="wl-einput wl-esm" type="text" value="${esc(w.age||'')}" placeholder="Age…" ${dis}
+            onblur="saveWaiter(${w.id},'age',this.value)">
+          <input class="wl-einput" type="text" value="${esc(w.substance||'')}" placeholder="Substance…" ${dis}
+            onblur="saveWaiter(${w.id},'substance',this.value)">
+        </div>
+        <input class="wl-einput" type="text" value="${esc(w.notes||'')}" placeholder="Notes…" ${dis}
+          onblur="saveWaiter(${w.id},'notes',this.value)">
+        <select class="wl-esel" ${dis} onchange="saveWaiter(${w.id},'room',this.value)">
+          ${roomOptions(w.room)}
+        </select>
+      </div>
+      ${isAdmin()?`<button class="wl-del" onclick="removeWaiter(${w.id})" aria-label="Remove" style="align-self:flex-start;margin-top:4px"><i class="ti ti-x"></i></button>`:''}
     </div>`;
   }).join('');
+}
+function saveWaiter(id,field,value){
+  const w=waitlist.find(x=>x.id===id);if(!w)return;w[field]=value;
+  apiFetch(`/api/waitlist/${id}`,{method:'PUT',body:JSON.stringify({name:w.name,sex:w.sex,age:w.age,substance:w.substance,notes:w.notes,room:w.room})})
+    .then(()=>showToast('Saved')).catch(e=>showErr('Save failed: '+e.message));
 }
 
 function renderModalWaitlist(roomId){
@@ -652,7 +691,8 @@ function renderIncomingTab(){
     return `<div class="ic-row" onclick="openIC(${c.id})">
       <div class="ic-avatar">${initials(c.name)}</div>
       <div class="ic-info">
-        <div class="ic-name">${c.name}</div>
+        <input class="ic-name-input" type="text" value="${esc(c.name)}" placeholder="Name…" ${isAdmin()?'':'disabled'}
+          onclick="event.stopPropagation()" onblur="saveIncomingName(${c.id},this.value)">
         <div class="ic-prog-text">${done} of ${total} tasks complete</div>
       </div>
       <div class="ic-prog-wrap"><div class="ic-prog-bar" style="width:${pct}%"></div></div>
@@ -692,6 +732,13 @@ function removeIncomingClient(ev,id){
       document.getElementById('ic-badge').textContent=incomingClients.length;
       showToast('Removed');
     }).catch(e=>showErr('Error: '+e.message));
+}
+function saveIncomingName(id,value){
+  const name=value.trim();if(!name)return;
+  const c=incomingClients.find(x=>x.id===id);if(!c||c.name===name)return;
+  c.name=name;
+  apiFetch(`/api/incoming/${id}`,{method:'PUT',body:JSON.stringify({name})})
+    .then(()=>showToast('Saved')).catch(e=>showErr('Save failed: '+e.message));
 }
 
 function openIC(clientId){
@@ -835,7 +882,8 @@ function renderVirtualTab(){
   list.innerHTML=virtualClients.map(v=>`
     <div class="virt-row">
       <div class="virt-avatar">${initials(v.name)}</div>
-      <div class="virt-name">${v.name}</div>
+      <input class="virt-input virt-name-input" type="text" value="${esc(v.name)}" placeholder="Name…" ${isAdmin()?'':'disabled'}
+        onblur="saveVirtual(${v.id},'name',this.value)">
       <div class="virt-field"><span class="virt-label">Course</span>
         <select class="virt-select" ${isAdmin()?'':'disabled'} onchange="saveVirtual(${v.id},'course',this.value)">
           <option value="Independent Study" ${v.course==='Independent Study'?'selected':''}>Independent Study</option>
@@ -860,7 +908,7 @@ function addVirtualClient(){
 }
 function saveVirtual(id,field,value){
   const v=virtualClients.find(x=>x.id===id);if(!v)return;v[field]=value;
-  apiFetch(`/api/virtual/${id}`,{method:'PUT',body:JSON.stringify({course:v.course,counsellor:v.counsellor})})
+  apiFetch(`/api/virtual/${id}`,{method:'PUT',body:JSON.stringify({name:v.name,course:v.course,counsellor:v.counsellor})})
     .then(()=>showToast('Saved')).catch(e=>showErr('Save failed: '+e.message));
 }
 function removeVirtualClient(id){
@@ -878,7 +926,8 @@ function renderFamilyTab(){
   list.innerHTML=familyMembers.map(f=>`
     <div class="virt-row">
       <div class="virt-avatar" style="background:#FAEEDA;color:#633806">${initials(f.name)}</div>
-      <div class="virt-name">${f.name}</div>
+      <input class="virt-input virt-name-input" type="text" value="${esc(f.name)}" placeholder="Name…" ${isAdmin()?'':'disabled'}
+        onblur="saveFamily(${f.id},'name',this.value)">
       <div class="virt-field"><span class="virt-label">Client association</span>
         <input class="virt-input" type="text" value="${f.client_association||''}" placeholder="Client name…" ${isAdmin()?'':'disabled'}
           onblur="saveFamily(${f.id},'client_association',this.value)">
@@ -911,7 +960,7 @@ function addFamilyMember(){
 }
 function saveFamily(id,field,value){
   const f=familyMembers.find(x=>x.id===id);if(!f)return;f[field]=value;
-  apiFetch(`/api/family/${id}`,{method:'PUT',body:JSON.stringify({client_association:f.client_association,therapist:f.therapist,connected:f.connected})})
+  apiFetch(`/api/family/${id}`,{method:'PUT',body:JSON.stringify({name:f.name,client_association:f.client_association,therapist:f.therapist,connected:f.connected})})
     .then(()=>showToast('Saved')).catch(e=>showErr('Save failed: '+e.message));
 }
 function removeFamilyMember(id){
