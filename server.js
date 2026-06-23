@@ -66,6 +66,20 @@ async function initDB() {
       connected          TEXT DEFAULT 'Pending',
       created_at         TIMESTAMPTZ DEFAULT NOW()
     );
+    CREATE TABLE IF NOT EXISTS incoming_clients (
+      id         SERIAL PRIMARY KEY,
+      name       TEXT NOT NULL,
+      created_at TIMESTAMPTZ DEFAULT NOW()
+    );
+    CREATE TABLE IF NOT EXISTS incoming_checklist (
+      id         SERIAL PRIMARY KEY,
+      client_id  INTEGER NOT NULL,
+      task_key   TEXT NOT NULL,
+      task_label TEXT,
+      completed  BOOLEAN DEFAULT FALSE,
+      created_at TIMESTAMPTZ DEFAULT NOW(),
+      UNIQUE(client_id, task_key)
+    );
   `);
   console.log('Database ready');
 }
@@ -236,6 +250,64 @@ app.delete('/api/family/:id', adminAuth, async (req, res) => {
   } catch (e) {
     res.status(500).json({ error: e.message });
   }
+});
+
+// --- Incoming clients ---
+
+app.get('/api/incoming', auth, async (req, res) => {
+  try {
+    const { rows } = await pool.query(`
+      SELECT ic.id, ic.name, ic.created_at,
+        COALESCE((SELECT COUNT(*) FROM incoming_checklist WHERE client_id=ic.id AND completed=true AND task_key NOT LIKE 'custom_%'),0)::int AS std_done,
+        COALESCE((SELECT COUNT(*) FROM incoming_checklist WHERE client_id=ic.id AND completed=true AND task_key LIKE 'custom_%'),0)::int AS custom_done,
+        COALESCE((SELECT COUNT(*) FROM incoming_checklist WHERE client_id=ic.id AND task_key LIKE 'custom_%'),0)::int AS custom_total
+      FROM incoming_clients ic ORDER BY ic.created_at ASC
+    `);
+    res.json(rows);
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.post('/api/incoming', adminAuth, async (req, res) => {
+  const { name } = req.body;
+  try {
+    const { rows } = await pool.query('INSERT INTO incoming_clients (name) VALUES ($1) RETURNING id', [name]);
+    res.json({ id: rows[0].id });
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.delete('/api/incoming/:id', adminAuth, async (req, res) => {
+  try {
+    await pool.query('DELETE FROM incoming_checklist WHERE client_id=$1', [req.params.id]);
+    await pool.query('DELETE FROM incoming_clients WHERE id=$1', [req.params.id]);
+    res.json({ ok: true });
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.get('/api/incoming/:id/checklist', auth, async (req, res) => {
+  try {
+    const { rows } = await pool.query('SELECT * FROM incoming_checklist WHERE client_id=$1 ORDER BY created_at ASC', [req.params.id]);
+    res.json(rows);
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.post('/api/incoming/:id/checklist', auth, async (req, res) => {
+  const { task_key, task_label, completed } = req.body;
+  try {
+    const { rows } = await pool.query(`
+      INSERT INTO incoming_checklist (client_id, task_key, task_label, completed)
+      VALUES ($1,$2,$3,$4)
+      ON CONFLICT (client_id, task_key) DO UPDATE SET completed=$4
+      RETURNING id
+    `, [req.params.id, task_key, task_label||null, completed===true||completed==='true']);
+    res.json({ id: rows[0].id });
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.delete('/api/incoming/:clientId/checklist/:taskId', adminAuth, async (req, res) => {
+  try {
+    await pool.query('DELETE FROM incoming_checklist WHERE id=$1 AND client_id=$2', [req.params.taskId, req.params.clientId]);
+    res.json({ ok: true });
+  } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
 // Verify password endpoint — returns role so frontend can adjust UI

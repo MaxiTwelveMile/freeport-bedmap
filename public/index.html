@@ -8,8 +8,6 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#F0EDE8;min-height:100vh;color:#1a1a1a}
-
-/* Login */
 #login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh}
 .login-card{background:#fff;border-radius:16px;border:0.5px solid #ddd;padding:2.5rem 2rem;width:320px;text-align:center}
 .login-logo{font-size:22px;font-weight:600;margin-bottom:4px}
@@ -19,9 +17,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .login-btn{width:100%;padding:9px;font-size:14px;font-weight:500;background:#1a1a1a;color:#fff;border:none;border-radius:8px;cursor:pointer}
 .login-btn:hover{background:#333}
 .login-error{font-size:12px;color:#A32D2D;margin-top:8px;min-height:18px}
-
-/* App */
-#app{display:none;max-width:1000px;margin:0 auto;padding:16px}
+#app{display:none;max-width:1050px;margin:0 auto;padding:16px}
 .card{background:#fff;border-radius:16px;border:0.5px solid #ddd;overflow:hidden;margin-bottom:16px}
 .hdr{padding:.9rem 1.25rem .65rem;border-bottom:0.5px solid #eee;display:flex;align-items:center;justify-content:space-between}
 .hdr h1{font-size:17px;font-weight:600}.hdr-sub{font-size:12px;color:#666}
@@ -33,8 +29,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .stat{background:#f8f7f5;border-radius:8px;padding:7px 10px;flex:1;text-align:center}
 .stat-n{font-size:20px;font-weight:600}.stat-l{font-size:10px;color:#888;margin-top:1px}
 .stat.v .stat-n{color:#3B6D11}.stat.e .stat-n{color:#854F0B}.stat.u .stat-n{color:#A32D2D}
-
-/* Tabs */
 .tabs{display:flex;padding:.6rem 1.25rem 0;border-bottom:0.5px solid #eee;gap:4px;flex-wrap:wrap;align-items:flex-end}
 .tab{padding:6px 13px;font-size:12px;font-weight:500;cursor:pointer;border:0.5px solid #ccc;background:#f8f7f5;color:#666;border-radius:8px 8px 0 0}
 .tab.active{background:#fff;color:#1a1a1a;border-bottom:none;position:relative;bottom:-0.5px}
@@ -46,7 +40,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .tab-divider{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:3px;margin:0 4px;gap:3px}
 .tab-divider-line{width:1px;height:24px;background:#ccc}
 .tab-divider-label{font-size:9px;font-weight:600;color:#aaa;white-space:nowrap;letter-spacing:.05em;text-transform:uppercase}
-
 .fl{display:none;padding:.85rem 1.25rem}.fl.active{display:block}
 .legend{display:flex;gap:10px;padding:.35rem 1.25rem .5rem;flex-wrap:wrap}
 .li{display:flex;align-items:center;gap:5px;font-size:11px;color:#666}
@@ -75,8 +68,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .bdays{font-size:10px;color:#888;margin-top:1px}
 .bed.expiring .bdays{color:#854F0B}.bed.urgent .bdays{color:#A32D2D}
 .bid{font-size:10px;color:#bbb;flex-shrink:0}
-
-/* Modal */
 .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;align-items:center;justify-content:center;padding:16px}
 .overlay.open{display:flex}
 .modal{background:#fff;border-radius:16px;border:0.5px solid #ddd;width:360px;max-height:90vh;overflow-y:auto}
@@ -103,8 +94,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .bc{background:#FCEBEB;color:#A32D2D;border-color:#F7C1C1}.bc:hover{filter:brightness(.94)}
 .bx{background:#f8f7f5;color:#666;border-color:#ddd}.bx:hover{background:#eee}
 .spin-btn{background:#f8f7f5;color:#666;border:0.5px solid #ddd;opacity:.6;cursor:default}
-
-/* Waitlist & client rows */
 .sex-badge{display:inline-block;padding:1px 6px;border-radius:20px;font-size:10px;font-weight:600}
 .sex-M{background:#E6F1FB;color:#0C447C}.sex-F{background:#FBEAF0;color:#72243E}.sex-NB{background:#EEEDFE;color:#3C3489}
 .wl-item{display:flex;align-items:center;gap:8px;padding:8px 10px;border:0.5px solid #eee;border-radius:8px;margin-bottom:6px;background:#f8f7f5}
@@ -136,8 +125,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .toast{position:fixed;bottom:20px;right:20px;background:#1a1a1a;color:#fff;padding:10px 16px;border-radius:8px;font-size:13px;z-index:200;opacity:0;transition:opacity .3s;pointer-events:none}
 .toast.show{opacity:1}
 .err-banner{background:#FCEBEB;color:#A32D2D;font-size:12px;padding:8px 1.25rem;border-bottom:0.5px solid #F7C1C1;display:none}
-
-/* Virtual / Family rows */
+/* Virtual / Family */
 .virt-note{font-size:11px;color:#3B6D11;background:#EAF3DE;border:0.5px solid #C0DD97;border-radius:8px;padding:6px 12px;margin-bottom:12px;display:flex;align-items:center;gap:6px}
 .virt-section-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
 .virt-section-hdr h3{font-size:14px;font-weight:600}
@@ -157,11 +145,48 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .conn-Pending{background:#FAEEDA;color:#633806;border-color:#FAC775}
 .add-virt-form{background:#f8f7f5;border:0.5px solid #eee;border-radius:12px;padding:.75rem;margin-bottom:14px}
 .add-virt-title{font-size:12px;font-weight:600;color:#666;margin-bottom:10px}
+/* Incoming clients */
+.ic-row{display:flex;align-items:center;gap:12px;padding:10px 12px;border:0.5px solid #eee;border-radius:8px;margin-bottom:6px;background:#f8f7f5;cursor:pointer;transition:filter .12s}
+.ic-row:hover{filter:brightness(.96)}
+.ic-avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex-shrink:0;background:#E6F1FB;color:#0C447C}
+.ic-info{flex:1;min-width:0}
+.ic-name{font-size:13px;font-weight:600}
+.ic-prog-text{font-size:11px;color:#888;margin-top:2px}
+.ic-prog-wrap{width:80px;height:5px;background:#e8e5e0;border-radius:3px;overflow:hidden;flex-shrink:0}
+.ic-prog-bar{height:5px;border-radius:3px;background:#3B6D11;transition:width .3s}
+.ic-status{font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;flex-shrink:0}
+.ic-status.new{background:#f0ede8;color:#888}
+.ic-status.progress{background:#FAEEDA;color:#633806}
+.ic-status.done{background:#EAF3DE;color:#3B6D11}
+/* Checklist modal */
+.ic-modal{width:480px}
+.ic-prog-header{padding:0 1.25rem .75rem;border-bottom:0.5px solid #eee}
+.ic-prog-big-wrap{height:6px;background:#e8e5e0;border-radius:3px;overflow:hidden;margin-bottom:6px}
+.ic-prog-big-bar{height:6px;border-radius:3px;background:#3B6D11;transition:width .3s}
+.ic-prog-label{font-size:11px;color:#888}
+.chk-body{padding:.75rem 1.25rem}
+.chk-group{margin-bottom:4px}
+.chk-row{display:flex;align-items:flex-start;gap:8px;padding:5px 6px;border-radius:6px}
+.chk-row:hover{background:#f8f7f5}
+.chk-row.sub{padding-left:28px}
+.chk-label{display:flex;align-items:flex-start;gap:8px;cursor:pointer;flex:1;font-size:13px;line-height:1.4}
+.chk-label input[type=checkbox]{margin-top:2px;flex-shrink:0;cursor:pointer;accent-color:#3B6D11;width:15px;height:15px}
+.chk-label input[type=checkbox]:disabled{cursor:default}
+.chk-txt{flex:1}.chk-done{color:#bbb;text-decoration:line-through}
+.chk-del{background:none;border:none;cursor:pointer;color:#ddd;font-size:12px;padding:2px;line-height:1;flex-shrink:0;margin-left:4px}
+.chk-del:hover{color:#A32D2D}
+.chk-divider{border:none;border-top:0.5px solid #eee;margin:10px 0}
+.chk-add-section{padding:.75rem 1.25rem;border-top:0.5px solid #eee}
+.chk-add-title{font-size:11px;font-weight:600;color:#888;margin-bottom:8px;text-transform:uppercase;letter-spacing:.04em}
+.chk-add-row{display:flex;gap:8px}
+.chk-add-row input{flex:1;padding:6px 9px;font-size:12px;border:0.5px solid #ccc;border-radius:8px;background:#f8f7f5;color:#1a1a1a}
+.chk-add-row input:focus{outline:none;border-color:#666}
+.chk-add-btn{padding:6px 12px;font-size:12px;border-radius:8px;border:0.5px solid #B5D4F4;background:#E6F1FB;color:#0C447C;cursor:pointer;white-space:nowrap}
+.chk-add-btn:hover{filter:brightness(.94)}
 </style>
 </head>
 <body>
 
-<!-- Login -->
 <div id="login-screen">
   <div class="login-card">
     <div class="login-logo">Freeport Recovery</div>
@@ -172,7 +197,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   </div>
 </div>
 
-<!-- App -->
 <div id="app">
   <div class="card">
     <div class="hdr">
@@ -196,6 +220,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       <div class="tab" onclick="showTab('f2')">2nd floor</div>
       <div class="tab" onclick="showTab('f3')">3rd floor</div>
       <div class="tab" onclick="showTab('wl')">Waiting list <span class="badge" id="wl-badge">0</span></div>
+      <div class="tab" onclick="showTab('ic')"><i class="ti ti-clipboard-list"></i> Incoming <span class="badge" id="ic-badge">0</span></div>
       <div class="tab-divider"><div class="tab-divider-label">Virtual contact</div><div class="tab-divider-line"></div></div>
       <div class="tab virt-tab" onclick="showTab('vt')"><i class="ti ti-device-laptop"></i> Virtual <span class="badge" id="vt-badge">0</span></div>
       <div class="tab virt-tab" onclick="showTab('fm')"><i class="ti ti-heart"></i> Family support <span class="badge" id="fm-badge">0</span></div>
@@ -238,6 +263,20 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
         </div>
         <div id="wl-list"></div>
       </div>
+    </div>
+
+    <!-- Incoming clients tab -->
+    <div class="fl" id="ic">
+      <div class="clients-hdr" style="margin-bottom:14px">
+        <h3>Incoming clients <span id="ic-count" style="font-size:12px;font-weight:400;color:#888"></span></h3>
+        <button class="virt-add-btn admin-only" onclick="showAddICForm()"><i class="ti ti-user-plus"></i> Add client</button>
+      </div>
+      <div class="add-virt-form admin-only" id="add-ic-form" style="display:none">
+        <div class="add-virt-title"><i class="ti ti-user-plus"></i> New incoming client</div>
+        <div class="fr"><label>Full name</label><input type="text" id="ic-name-input" placeholder="Client name" onkeydown="if(event.key==='Enter')addIncomingClient()"></div>
+        <button class="btn bs" onclick="addIncomingClient()" style="width:100%">Add client</button>
+      </div>
+      <div id="ic-list"></div>
     </div>
 
     <!-- Virtual tab -->
@@ -283,7 +322,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   </div>
 </div>
 
-<!-- Modal -->
+<!-- Bed modal -->
 <div class="overlay" id="overlay" onclick="closeM(event)">
   <div class="modal" onclick="event.stopPropagation()">
     <div class="mh">
@@ -332,6 +371,28 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   </div>
 </div>
 
+<!-- Incoming checklist modal -->
+<div class="overlay" id="ic-overlay" onclick="closeIC(event)">
+  <div class="modal ic-modal" onclick="event.stopPropagation()">
+    <div class="mh">
+      <div><h2 id="ic-modal-title">Client</h2><div class="mh-sub" id="ic-modal-sub">Intake checklist</div></div>
+      <button class="mclose" onclick="closeIC()" aria-label="Close">&#x2715;</button>
+    </div>
+    <div class="ic-prog-header">
+      <div class="ic-prog-big-wrap"><div class="ic-prog-big-bar" id="ic-prog-big-bar" style="width:0%"></div></div>
+      <div class="ic-prog-label" id="ic-prog-label">0 of 0 tasks complete</div>
+    </div>
+    <div class="chk-body" id="ic-checklist"></div>
+    <div class="chk-add-section" id="ic-add-section">
+      <div class="chk-add-title">Add extra task</div>
+      <div class="chk-add-row">
+        <input type="text" id="ic-custom-input" placeholder="Describe the extra task…" onkeydown="if(event.key==='Enter')addCustomTask()">
+        <button class="chk-add-btn" onclick="addCustomTask()">Add</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -359,7 +420,33 @@ const allRooms=Object.values(FLOORS).flat();
 function roomById(id){return allRooms.find(r=>r.id===id);}
 function roomForBed(bedId){return allRooms.find(r=>r.beds.includes(bedId));}
 
-let clients={}, waitlist=[], virtualClients=[], familyMembers=[];
+const INCOMING_TASKS=[
+  {key:'pre_screening',    label:'Pre-screening Call',                        subs:[]},
+  {key:'intake_date',      label:'Intake Date: approved by Intake team',      subs:[]},
+  {key:'calendar_set',     label:'Calendar Set',                              subs:[
+    {key:'cal_nurse',        label:'Nurse'},
+    {key:'cal_lead',         label:'Lead Counsellors'},
+    {key:'cal_admin',        label:'Admin Team'},
+    {key:'cal_recover',      label:'Recover'},
+  ]},
+  {key:'invoice_1',        label:'Invoice 1: made and sent',                  subs:[]},
+  {key:'pre_intake_forms', label:'Pre-intake forms / Packing List',           subs:[]},
+  {key:'fyi_demographics', label:'FYI: Demographics',                         subs:[]},
+  {key:'nursing_assigned', label:'Nursing Team Assigned',                     subs:[
+    {key:'nursing_notified', label:'Nursing notified of pre-intake call'},
+  ]},
+  {key:'fyi_file_open',    label:'FYI File Open',                             subs:[
+    {key:'intake_exit',      label:'Intake and exit assigned'},
+  ]},
+  {key:'contract',         label:'Contract: made and sent',                   subs:[]},
+  {key:'fyi_contract',     label:'FYI: Contract uploaded',                    subs:[]},
+  {key:'invoice_2',        label:'Invoice 2: made and sent',                  subs:[]},
+  {key:'chase_payments',   label:'Chase Payments',                            subs:[]},
+];
+const STD_TASK_COUNT=(()=>{let n=0;INCOMING_TASKS.forEach(t=>{n++;n+=t.subs.length;});return n;})();
+
+let clients={}, waitlist=[], virtualClients=[], familyMembers=[], incomingClients=[];
+let incomingChecklists={}, activeIncomingId=null;
 let activeBed=null, activeRoomId=null;
 let pw='', role='staff';
 
@@ -370,9 +457,10 @@ function applyRole(){
   document.getElementById('hdr-sub').textContent=admin?'Click any bed or client to view and edit details':'Click any bed or client to view details (view only)';
   document.querySelectorAll('.admin-only').forEach(el=>el.style.display=admin?'':'none');
   document.querySelectorAll('#mc input, #mc select').forEach(el=>{el.disabled=!admin;});
+  const addSec=document.getElementById('ic-add-section');
+  if(addSec) addSec.style.display=admin?'':'none';
 }
 
-// --- Auth ---
 function doLogin(){
   const p=document.getElementById('pw-input').value;
   if(!p){document.getElementById('login-err').textContent='Enter a password';return;}
@@ -383,15 +471,12 @@ function doLogin(){
         sessionStorage.setItem('fp_pw',p);
         document.getElementById('login-screen').style.display='none';
         document.getElementById('app').style.display='block';
-        applyRole();
-        loadAll();
-      } else {
-        document.getElementById('login-err').textContent='Incorrect password';
-      }
+        applyRole(); loadAll();
+      } else { document.getElementById('login-err').textContent='Incorrect password'; }
     }).catch(()=>document.getElementById('login-err').textContent='Could not connect to server');
 }
 function doLogout(){
-  pw='';sessionStorage.removeItem('fp_pw');
+  pw=''; sessionStorage.removeItem('fp_pw');
   document.getElementById('login-screen').style.display='flex';
   document.getElementById('app').style.display='none';
   document.getElementById('pw-input').value='';
@@ -404,17 +489,16 @@ function apiFetch(url,opts={}){
   });
 }
 
-// --- Data ---
 function loadAll(){
   Promise.all([
     apiFetch('/api/clients'),
     apiFetch('/api/waitlist'),
     apiFetch('/api/virtual'),
     apiFetch('/api/family'),
-  ]).then(([c,w,v,f])=>{
-    clients=c||{}; waitlist=w||[]; virtualClients=v||[]; familyMembers=f||[];
-    renderAll();
-    hideErr();
+    apiFetch('/api/incoming'),
+  ]).then(([c,w,v,f,ic])=>{
+    clients=c||{}; waitlist=w||[]; virtualClients=v||[]; familyMembers=f||[]; incomingClients=ic||[];
+    renderAll(); hideErr();
   }).catch(e=>showErr('Failed to load data: '+e.message));
 }
 
@@ -426,14 +510,10 @@ function bStatus(id){
   return d<=7?'urgent':d<=14?'expiring':'occupied';
 }
 function initials(name){const p=name.trim().split(' ');return(p[0][0]+(p[1]?p[1][0]:'')).toUpperCase();}
-
 function showErr(msg){const b=document.getElementById('err-banner');b.textContent=msg;b.style.display='block';}
 function hideErr(){document.getElementById('err-banner').style.display='none';}
-function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
-function setSaving(saving){
-  document.getElementById('save-btn').className='btn '+(saving?'spin-btn':'bs');
-  document.getElementById('save-btn').textContent=saving?'Saving…':'Save';
-}
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200);}
+function setSaving(s){document.getElementById('save-btn').className='btn '+(s?'spin-btn':'bs');document.getElementById('save-btn').textContent=s?'Saving…':'Save';}
 
 function populateRoomDropdown(){
   const sel=document.getElementById('wr');
@@ -459,10 +539,12 @@ function renderAll(){
     });
   });
   renderWaitlistTab();
+  renderIncomingTab();
   renderVirtualTab();
   renderFamilyTab();
   updateStats();
   document.getElementById('wl-badge').textContent=waitlist.length;
+  document.getElementById('ic-badge').textContent=incomingClients.length;
   document.getElementById('vt-badge').textContent=virtualClients.length;
   document.getElementById('fm-badge').textContent=familyMembers.length;
 }
@@ -495,10 +577,7 @@ function renderClientList(){
         <div class="cr-name">${sexBadge}${c.name}${c.age?', '+c.age:''}</div>
         <div class="cr-meta">${c.substance||'<span style="color:#bbb;font-style:italic">Substance not listed</span>'}${c.intake?' · In: '+c.intake:''}</div>
       </div>
-      <div class="cr-right${rtCls}">
-        <div class="cr-room">${room.name}</div>
-        <div class="cr-days">${daysStr}</div>
-      </div>
+      <div class="cr-right${rtCls}"><div class="cr-room">${room.name}</div><div class="cr-days">${daysStr}</div></div>
     </div>`;
   }).join('');
 }
@@ -530,10 +609,7 @@ function renderWaitlistTab(){
     const avatarCls=w.sex==='F'?' f':w.sex==='NB'?' nb':'';
     return `<div class="wl-item">
       <div class="wl-avatar${avatarCls}">${initials(w.name)}</div>
-      <div class="wl-info">
-        <div class="wl-name">${sexBadge}${w.name}${w.age?', age '+w.age:''}</div>
-        <div class="wl-meta">${w.substance||'Substance not listed'}${w.notes?' · '+w.notes:''}</div>
-      </div>
+      <div class="wl-info"><div class="wl-name">${sexBadge}${w.name}${w.age?', age '+w.age:''}</div><div class="wl-meta">${w.substance||'Substance not listed'}${w.notes?' · '+w.notes:''}</div></div>
       <span class="wl-rm">${rm?rm.name:'Any room'}</span>
       ${isAdmin()?`<button class="wl-del" onclick="removeWaiter(${w.id})" aria-label="Remove"><i class="ti ti-x"></i></button>`:''}
     </div>`;
@@ -550,13 +626,205 @@ function renderModalWaitlist(roomId){
     const avatarCls=w.sex==='F'?' f':w.sex==='NB'?' nb':'';
     return `<div class="wl-item">
       <div class="wl-avatar${avatarCls}">${initials(w.name)}</div>
-      <div class="wl-info">
-        <div class="wl-name">${sexBadge}${w.name}${w.age?', age '+w.age:''}</div>
-        <div class="wl-meta">${w.substance||'Substance not listed'}${w.notes?' · '+w.notes:''}</div>
-      </div>
+      <div class="wl-info"><div class="wl-name">${sexBadge}${w.name}${w.age?', age '+w.age:''}</div><div class="wl-meta">${w.substance||'Substance not listed'}${w.notes?' · '+w.notes:''}</div></div>
       ${isAdmin()?`<button class="wl-del" onclick="removeWaiterModal(${w.id},'${roomId}')" aria-label="Remove"><i class="ti ti-x"></i></button>`:''}
     </div>`;
   }).join('');
+}
+
+// --- Incoming clients ---
+function icProgress(client){
+  const custom_total=parseInt(client.custom_total)||0;
+  const total=STD_TASK_COUNT+custom_total;
+  const done=(parseInt(client.std_done)||0)+(parseInt(client.custom_done)||0);
+  return {done,total};
+}
+
+function renderIncomingTab(){
+  const list=document.getElementById('ic-list');
+  document.getElementById('ic-count').textContent=incomingClients.length?`— ${incomingClients.length} client${incomingClients.length!==1?'s':''}  `:'';
+  if(!incomingClients.length){list.innerHTML='<div class="wl-empty">No incoming clients yet — add one above</div>';return;}
+  list.innerHTML=incomingClients.map(c=>{
+    const {done,total}=icProgress(c);
+    const pct=total>0?Math.round(done/total*100):0;
+    const statusCls=done===0?'new':done===total?'done':'progress';
+    const statusLbl=done===0?'Not started':done===total?'Complete':'In progress';
+    return `<div class="ic-row" onclick="openIC(${c.id})">
+      <div class="ic-avatar">${initials(c.name)}</div>
+      <div class="ic-info">
+        <div class="ic-name">${c.name}</div>
+        <div class="ic-prog-text">${done} of ${total} tasks complete</div>
+      </div>
+      <div class="ic-prog-wrap"><div class="ic-prog-bar" style="width:${pct}%"></div></div>
+      <span class="ic-status ${statusCls}">${statusLbl}</span>
+      ${isAdmin()?`<button class="virt-del" onclick="removeIncomingClient(event,${c.id})" aria-label="Remove"><i class="ti ti-x"></i></button>`:''}
+    </div>`;
+  }).join('');
+}
+
+function showAddICForm(){
+  const f=document.getElementById('add-ic-form');
+  f.style.display=f.style.display==='none'?'block':'none';
+  if(f.style.display==='block') setTimeout(()=>document.getElementById('ic-name-input').focus(),50);
+}
+
+function addIncomingClient(){
+  const name=document.getElementById('ic-name-input').value.trim();if(!name)return;
+  apiFetch('/api/incoming',{method:'POST',body:JSON.stringify({name})})
+    .then(d=>{
+      incomingClients.push({id:d.id,name,std_done:0,custom_done:0,custom_total:0});
+      document.getElementById('ic-name-input').value='';
+      document.getElementById('add-ic-form').style.display='none';
+      renderIncomingTab();
+      document.getElementById('ic-badge').textContent=incomingClients.length;
+      showToast('Incoming client added');
+    }).catch(e=>showErr('Error: '+e.message));
+}
+
+function removeIncomingClient(ev,id){
+  ev.stopPropagation();
+  if(!confirm('Remove this incoming client and their checklist?'))return;
+  apiFetch(`/api/incoming/${id}`,{method:'DELETE'})
+    .then(()=>{
+      incomingClients=incomingClients.filter(c=>c.id!==id);
+      delete incomingChecklists[id];
+      renderIncomingTab();
+      document.getElementById('ic-badge').textContent=incomingClients.length;
+      showToast('Removed');
+    }).catch(e=>showErr('Error: '+e.message));
+}
+
+function openIC(clientId){
+  activeIncomingId=clientId;
+  const client=incomingClients.find(c=>c.id===clientId);
+  document.getElementById('ic-modal-title').textContent=client?client.name:'Client';
+  document.getElementById('ic-overlay').classList.add('open');
+  if(incomingChecklists[clientId]){
+    renderChecklist(); return;
+  }
+  apiFetch(`/api/incoming/${clientId}/checklist`)
+    .then(rows=>{
+      incomingChecklists[clientId]=rows;
+      renderChecklist();
+    }).catch(e=>showErr('Error loading checklist: '+e.message));
+}
+
+function closeIC(e){
+  if(e&&e.target!==document.getElementById('ic-overlay'))return;
+  document.getElementById('ic-overlay').classList.remove('open');
+  activeIncomingId=null;
+}
+
+function renderChecklist(){
+  const clientId=activeIncomingId;
+  const checks=incomingChecklists[clientId]||[];
+  const map={};
+  checks.forEach(c=>map[c.task_key]=c);
+  const admin=isAdmin();
+  let html='';
+  INCOMING_TASKS.forEach(task=>{
+    const checked=map[task.key]?.completed||false;
+    html+=`<div class="chk-group">
+      <div class="chk-row">
+        <label class="chk-label">
+          <input type="checkbox" ${checked?'checked':''} onchange="toggleTask('${task.key}',this.checked)">
+          <span class="chk-txt ${checked?'chk-done':''}">${task.label}</span>
+        </label>
+      </div>`;
+    task.subs.forEach(sub=>{
+      const sc=map[sub.key]?.completed||false;
+      html+=`<div class="chk-row sub">
+        <label class="chk-label">
+          <input type="checkbox" ${sc?'checked':''} onchange="toggleTask('${sub.key}',this.checked)">
+          <span class="chk-txt ${sc?'chk-done':''}">${sub.label}</span>
+        </label>
+      </div>`;
+    });
+    html+='</div>';
+  });
+  const customTasks=checks.filter(c=>c.task_key.startsWith('custom_'));
+  if(customTasks.length){
+    html+='<hr class="chk-divider">';
+    customTasks.forEach(task=>{
+      const checked=task.completed||false;
+      html+=`<div class="chk-row">
+        <label class="chk-label">
+          <input type="checkbox" ${checked?'checked':''} onchange="toggleTask('${task.task_key}',this.checked)">
+          <span class="chk-txt ${checked?'chk-done':''}">${task.task_label}</span>
+        </label>
+        ${admin?`<button class="chk-del" onclick="deleteCustomTask(${task.id},'${task.task_key}')" aria-label="Remove task"><i class="ti ti-x"></i></button>`:''}
+      </div>`;
+    });
+  }
+  document.getElementById('ic-checklist').innerHTML=html;
+  updateChecklistProgress();
+}
+
+function toggleTask(taskKey, completed){
+  const clientId=activeIncomingId;
+  if(!incomingChecklists[clientId]) incomingChecklists[clientId]=[];
+  const existing=incomingChecklists[clientId].find(c=>c.task_key===taskKey);
+  if(existing) existing.completed=completed;
+  else incomingChecklists[clientId].push({task_key:taskKey,completed,task_label:null});
+  updateChecklistProgress();
+  updateClientProgressFromCache(clientId);
+  apiFetch(`/api/incoming/${clientId}/checklist`,{method:'POST',body:JSON.stringify({task_key:taskKey,completed})})
+    .catch(e=>showErr('Save failed: '+e.message));
+}
+
+function addCustomTask(){
+  const label=document.getElementById('ic-custom-input').value.trim();if(!label)return;
+  const clientId=activeIncomingId;
+  const taskKey='custom_'+Date.now();
+  apiFetch(`/api/incoming/${clientId}/checklist`,{method:'POST',body:JSON.stringify({task_key:taskKey,task_label:label,completed:false})})
+    .then(d=>{
+      if(!incomingChecklists[clientId]) incomingChecklists[clientId]=[];
+      incomingChecklists[clientId].push({id:d.id,task_key:taskKey,task_label:label,completed:false});
+      document.getElementById('ic-custom-input').value='';
+      const client=incomingClients.find(c=>c.id===clientId);
+      if(client) client.custom_total=(parseInt(client.custom_total)||0)+1;
+      renderChecklist();
+      updateClientProgressFromCache(clientId);
+      showToast('Task added');
+    }).catch(e=>showErr('Error: '+e.message));
+}
+
+function deleteCustomTask(rowId, taskKey){
+  const clientId=activeIncomingId;
+  apiFetch(`/api/incoming/${clientId}/checklist/${rowId}`,{method:'DELETE'})
+    .then(()=>{
+      incomingChecklists[clientId]=incomingChecklists[clientId].filter(c=>c.id!==rowId);
+      const client=incomingClients.find(c=>c.id===clientId);
+      if(client){
+        client.custom_total=Math.max(0,(parseInt(client.custom_total)||0)-1);
+        if(incomingChecklists[clientId].find(c=>c.task_key===taskKey&&c.completed)) client.custom_done=Math.max(0,(parseInt(client.custom_done)||0)-1);
+      }
+      renderChecklist();
+      updateClientProgressFromCache(clientId);
+      renderIncomingTab();
+    }).catch(e=>showErr('Error: '+e.message));
+}
+
+function updateChecklistProgress(){
+  const clientId=activeIncomingId;
+  const checks=incomingChecklists[clientId]||[];
+  const map={};checks.forEach(c=>map[c.task_key]=c);
+  let done=0,total=0;
+  INCOMING_TASKS.forEach(t=>{total++;if(map[t.key]?.completed)done++;t.subs.forEach(s=>{total++;if(map[s.key]?.completed)done++;});});
+  checks.filter(c=>c.task_key.startsWith('custom_')).forEach(c=>{total++;if(c.completed)done++;});
+  const pct=total>0?Math.round(done/total*100):0;
+  document.getElementById('ic-prog-big-bar').style.width=pct+'%';
+  document.getElementById('ic-prog-label').textContent=`${done} of ${total} tasks complete`;
+}
+
+function updateClientProgressFromCache(clientId){
+  const checks=incomingChecklists[clientId]||[];
+  const std_done=checks.filter(c=>!c.task_key.startsWith('custom_')&&c.completed).length;
+  const custom_done=checks.filter(c=>c.task_key.startsWith('custom_')&&c.completed).length;
+  const custom_total=checks.filter(c=>c.task_key.startsWith('custom_')).length;
+  const client=incomingClients.find(c=>c.id===clientId);
+  if(client){client.std_done=std_done;client.custom_done=custom_done;client.custom_total=custom_total;}
+  renderIncomingTab();
 }
 
 // --- Virtual clients ---
@@ -568,59 +836,38 @@ function renderVirtualTab(){
     <div class="virt-row">
       <div class="virt-avatar">${initials(v.name)}</div>
       <div class="virt-name">${v.name}</div>
-      <div class="virt-field">
-        <span class="virt-label">Course</span>
+      <div class="virt-field"><span class="virt-label">Course</span>
         <select class="virt-select" ${isAdmin()?'':'disabled'} onchange="saveVirtual(${v.id},'course',this.value)">
           <option value="Independent Study" ${v.course==='Independent Study'?'selected':''}>Independent Study</option>
           <option value="Guided Recovery" ${v.course==='Guided Recovery'?'selected':''}>Guided Recovery</option>
           <option value="Total Renewal" ${v.course==='Total Renewal'?'selected':''}>Total Renewal</option>
         </select>
       </div>
-      <div class="virt-field">
-        <span class="virt-label">Counsellor</span>
+      <div class="virt-field"><span class="virt-label">Counsellor</span>
         <input class="virt-input" type="text" value="${v.counsellor||''}" placeholder="Name…" ${isAdmin()?'':'disabled'}
           onblur="saveVirtual(${v.id},'counsellor',this.value)">
       </div>
-      ${isAdmin()?`<button class="virt-del" onclick="removeVirtualClient(${v.id})" aria-label="Remove"><i class="ti ti-x"></i></button>`:''}
+      ${isAdmin()?`<button class="virt-del" onclick="removeVirtualClient(${v.id})"><i class="ti ti-x"></i></button>`:''}
     </div>`).join('');
 }
-
-function showAddVirtForm(){
-  const f=document.getElementById('add-virt-form');
-  f.style.display=f.style.display==='none'?'block':'none';
-}
-
+function showAddVirtForm(){const f=document.getElementById('add-virt-form');f.style.display=f.style.display==='none'?'block':'none';}
 function addVirtualClient(){
   const name=document.getElementById('vn').value.trim();if(!name)return;
   const data={name,course:document.getElementById('vc').value,counsellor:document.getElementById('vco').value.trim()};
   apiFetch('/api/virtual',{method:'POST',body:JSON.stringify(data)})
-    .then(d=>{
-      virtualClients.push({...data,id:d.id});
-      document.getElementById('vn').value='';document.getElementById('vco').value='';
-      document.getElementById('add-virt-form').style.display='none';
-      renderVirtualTab();
-      document.getElementById('vt-badge').textContent=virtualClients.length;
-      showToast('Virtual client added');
-    }).catch(e=>showErr('Error: '+e.message));
+    .then(d=>{virtualClients.push({...data,id:d.id});document.getElementById('vn').value='';document.getElementById('vco').value='';document.getElementById('add-virt-form').style.display='none';renderVirtualTab();document.getElementById('vt-badge').textContent=virtualClients.length;showToast('Virtual client added');})
+    .catch(e=>showErr('Error: '+e.message));
 }
-
-function saveVirtual(id, field, value){
-  const v=virtualClients.find(x=>x.id===id);if(!v)return;
-  v[field]=value;
+function saveVirtual(id,field,value){
+  const v=virtualClients.find(x=>x.id===id);if(!v)return;v[field]=value;
   apiFetch(`/api/virtual/${id}`,{method:'PUT',body:JSON.stringify({course:v.course,counsellor:v.counsellor})})
-    .then(()=>showToast('Saved'))
-    .catch(e=>showErr('Save failed: '+e.message));
+    .then(()=>showToast('Saved')).catch(e=>showErr('Save failed: '+e.message));
 }
-
 function removeVirtualClient(id){
   if(!confirm('Remove this virtual client?'))return;
   apiFetch(`/api/virtual/${id}`,{method:'DELETE'})
-    .then(()=>{
-      virtualClients=virtualClients.filter(v=>v.id!==id);
-      renderVirtualTab();
-      document.getElementById('vt-badge').textContent=virtualClients.length;
-      showToast('Removed');
-    }).catch(e=>showErr('Error: '+e.message));
+    .then(()=>{virtualClients=virtualClients.filter(v=>v.id!==id);renderVirtualTab();document.getElementById('vt-badge').textContent=virtualClients.length;showToast('Removed');})
+    .catch(e=>showErr('Error: '+e.message));
 }
 
 // --- Family support ---
@@ -632,20 +879,17 @@ function renderFamilyTab(){
     <div class="virt-row">
       <div class="virt-avatar" style="background:#FAEEDA;color:#633806">${initials(f.name)}</div>
       <div class="virt-name">${f.name}</div>
-      <div class="virt-field">
-        <span class="virt-label">Client association</span>
+      <div class="virt-field"><span class="virt-label">Client association</span>
         <input class="virt-input" type="text" value="${f.client_association||''}" placeholder="Client name…" ${isAdmin()?'':'disabled'}
           onblur="saveFamily(${f.id},'client_association',this.value)">
       </div>
-      <div class="virt-field">
-        <span class="virt-label">Therapist</span>
+      <div class="virt-field"><span class="virt-label">Therapist</span>
         <select class="virt-select" ${isAdmin()?'':'disabled'} onchange="saveFamily(${f.id},'therapist',this.value)">
           <option value="Jessi" ${f.therapist==='Jessi'?'selected':''}>Jessi</option>
           <option value="Rachelle" ${f.therapist==='Rachelle'?'selected':''}>Rachelle</option>
         </select>
       </div>
-      <div class="virt-field">
-        <span class="virt-label">Connected?</span>
+      <div class="virt-field"><span class="virt-label">Connected?</span>
         <select class="virt-select conn-${f.connected||'Pending'}" ${isAdmin()?'':'disabled'}
           onchange="this.className='virt-select conn-'+this.value;saveFamily(${f.id},'connected',this.value)">
           <option value="Yes" ${f.connected==='Yes'?'selected':''}>Yes</option>
@@ -653,64 +897,42 @@ function renderFamilyTab(){
           <option value="Pending" ${(f.connected==='Pending'||!f.connected)?'selected':''}>Pending</option>
         </select>
       </div>
-      ${isAdmin()?`<button class="virt-del" onclick="removeFamilyMember(${f.id})" aria-label="Remove"><i class="ti ti-x"></i></button>`:''}
+      ${isAdmin()?`<button class="virt-del" onclick="removeFamilyMember(${f.id})"><i class="ti ti-x"></i></button>`:''}
     </div>`).join('');
 }
-
-function showAddFamForm(){
-  const f=document.getElementById('add-fam-form');
-  f.style.display=f.style.display==='none'?'block':'none';
-}
-
+function showAddFamForm(){const f=document.getElementById('add-fam-form');f.style.display=f.style.display==='none'?'block':'none';}
 function addFamilyMember(){
   const name=document.getElementById('fn2').value.trim();if(!name)return;
   const data={name,client_association:document.getElementById('fca').value.trim(),therapist:document.getElementById('fth').value,connected:document.getElementById('fco').value};
   apiFetch('/api/family',{method:'POST',body:JSON.stringify(data)})
-    .then(d=>{
-      familyMembers.push({...data,id:d.id});
-      document.getElementById('fn2').value='';document.getElementById('fca').value='';
-      document.getElementById('add-fam-form').style.display='none';
-      renderFamilyTab();
-      document.getElementById('fm-badge').textContent=familyMembers.length;
-      showToast('Family member added');
-    }).catch(e=>showErr('Error: '+e.message));
+    .then(d=>{familyMembers.push({...data,id:d.id});document.getElementById('fn2').value='';document.getElementById('fca').value='';document.getElementById('add-fam-form').style.display='none';renderFamilyTab();document.getElementById('fm-badge').textContent=familyMembers.length;showToast('Family member added');})
+    .catch(e=>showErr('Error: '+e.message));
 }
-
-function saveFamily(id, field, value){
-  const f=familyMembers.find(x=>x.id===id);if(!f)return;
-  f[field]=value;
+function saveFamily(id,field,value){
+  const f=familyMembers.find(x=>x.id===id);if(!f)return;f[field]=value;
   apiFetch(`/api/family/${id}`,{method:'PUT',body:JSON.stringify({client_association:f.client_association,therapist:f.therapist,connected:f.connected})})
-    .then(()=>showToast('Saved'))
-    .catch(e=>showErr('Save failed: '+e.message));
+    .then(()=>showToast('Saved')).catch(e=>showErr('Save failed: '+e.message));
 }
-
 function removeFamilyMember(id){
   if(!confirm('Remove this family member?'))return;
   apiFetch(`/api/family/${id}`,{method:'DELETE'})
-    .then(()=>{
-      familyMembers=familyMembers.filter(f=>f.id!==id);
-      renderFamilyTab();
-      document.getElementById('fm-badge').textContent=familyMembers.length;
-      showToast('Removed');
-    }).catch(e=>showErr('Error: '+e.message));
+    .then(()=>{familyMembers=familyMembers.filter(f=>f.id!==id);renderFamilyTab();document.getElementById('fm-badge').textContent=familyMembers.length;showToast('Removed');})
+    .catch(e=>showErr('Error: '+e.message));
 }
 
 function updateStats(){
   const all=allRooms.flatMap(r=>r.beds);
   let v=0,o=0,e=0,u=0;
   all.forEach(b=>{const s=bStatus(b);if(s==='vacant')v++;else o++;if(s==='expiring')e++;if(s==='urgent'){u++;e++;}});
-  document.getElementById('st').textContent=all.length;
-  document.getElementById('sv').textContent=v;
-  document.getElementById('so').textContent=o;
-  document.getElementById('se').textContent=e;
-  document.getElementById('su').textContent=u;
+  document.getElementById('st').textContent=all.length;document.getElementById('sv').textContent=v;
+  document.getElementById('so').textContent=o;document.getElementById('se').textContent=e;document.getElementById('su').textContent=u;
 }
 
 function showTab(id){
   document.querySelectorAll('.fl').forEach(f=>f.classList.remove('active'));
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.getElementById(id).classList.add('active');
-  const idx={cl:0,f1:1,f2:2,f3:3,wl:4,vt:5,fm:6}[id];
+  const idx={cl:0,f1:1,f2:2,f3:3,wl:4,ic:5,vt:6,fm:7}[id];
   document.querySelectorAll('.tab')[idx].classList.add('active');
 }
 
@@ -720,19 +942,15 @@ function openM(bedId){
   document.getElementById('mtitle').textContent='Bed '+bedId;
   document.getElementById('msubtitle').textContent=room?room.name:'';
   const c=clients[bedId]||{};
-  document.getElementById('fn').value=c.name||'';
-  document.getElementById('fs').value=c.sex||'';
-  document.getElementById('fa').value=c.age||'';
-  document.getElementById('fsu').value=c.substance||'';
-  document.getElementById('fi').value=c.intake||'';
-  document.getElementById('fe').value=c.exit||'';
+  document.getElementById('fn').value=c.name||'';document.getElementById('fs').value=c.sex||'';
+  document.getElementById('fa').value=c.age||'';document.getElementById('fsu').value=c.substance||'';
+  document.getElementById('fi').value=c.intake||'';document.getElementById('fe').value=c.exit||'';
   document.getElementById('fno').value=c.notes||'';
   updCD(c);switchMTab('mc');
   if(room) renderModalWaitlist(room.id);
   document.getElementById('overlay').classList.add('open');
   setTimeout(()=>document.getElementById('fn').focus(),50);
 }
-
 function openModalWl(roomId,ev){
   if(ev) ev.stopPropagation();
   const room=roomById(roomId);if(!room)return;
@@ -742,13 +960,11 @@ function openModalWl(roomId,ev){
   switchMTab('mw');renderModalWaitlist(roomId);
   document.getElementById('overlay').classList.add('open');
 }
-
 function switchMTab(id){
   document.querySelectorAll('.mtab').forEach((t,i)=>t.classList.toggle('active',['mc','mw'][i]===id));
   document.querySelectorAll('.mpanel').forEach(p=>p.classList.remove('active'));
   document.getElementById(id).classList.add('active');
 }
-
 function updCD(c){
   const bl=document.getElementById('cdblock'),nu=document.getElementById('cdnum'),lb=document.getElementById('cdlbl');
   bl.className='cd';
@@ -760,94 +976,59 @@ function updCD(c){
   bl.classList.add(d<=7?'crit':d<=14?'warn':'ok');
 }
 document.getElementById('fe').addEventListener('input',function(){updCD({name:document.getElementById('fn').value,exit:this.value});});
-
 function closeM(e){
   if(e&&e.target!==document.getElementById('overlay'))return;
   document.getElementById('overlay').classList.remove('open');activeBed=null;activeRoomId=null;
 }
-
 function saveC(){
   if(!activeBed)return;
   const name=document.getElementById('fn').value.trim();
   const data=name?{name,sex:document.getElementById('fs').value,age:document.getElementById('fa').value,substance:document.getElementById('fsu').value.trim(),intake:document.getElementById('fi').value,exit:document.getElementById('fe').value,notes:document.getElementById('fno').value.trim()}:{};
   setSaving(true);
   apiFetch(`/api/clients/${encodeURIComponent(activeBed)}`,{method:'PUT',body:JSON.stringify(data)})
-    .then(()=>{
-      clients[activeBed]=data;
-      setSaving(false);
-      renderAll();
-      document.getElementById('overlay').classList.remove('open');
-      document.getElementById('lsaved').textContent='Saved '+new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
-      showToast('Client saved');
-    }).catch(e=>{setSaving(false);showErr('Save failed: '+e.message);});
+    .then(()=>{clients[activeBed]=data;setSaving(false);renderAll();document.getElementById('overlay').classList.remove('open');document.getElementById('lsaved').textContent='Saved '+new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});showToast('Client saved');})
+    .catch(e=>{setSaving(false);showErr('Save failed: '+e.message);});
 }
-
 function clearB(){
   if(!activeBed)return;
   if(!confirm('Clear this bed? This will remove the client record.'))return;
   apiFetch(`/api/clients/${encodeURIComponent(activeBed)}`,{method:'PUT',body:JSON.stringify({})})
-    .then(()=>{
-      clients[activeBed]={};renderAll();
-      document.getElementById('overlay').classList.remove('open');
-      showToast('Bed cleared');
-    }).catch(e=>showErr('Error: '+e.message));
+    .then(()=>{clients[activeBed]={};renderAll();document.getElementById('overlay').classList.remove('open');showToast('Bed cleared');})
+    .catch(e=>showErr('Error: '+e.message));
 }
-
 function addWaiter(){
   const name=document.getElementById('wn').value.trim();if(!name)return;
   const data={name,age:document.getElementById('wa').value,sex:document.getElementById('ws').value,substance:document.getElementById('wsu').value.trim(),notes:document.getElementById('wno').value.trim(),room:document.getElementById('wr').value};
   apiFetch('/api/waitlist',{method:'POST',body:JSON.stringify(data)})
-    .then(d=>{
-      waitlist.push({...data,id:d.id});
-      ['wn','wa','wsu','wno'].forEach(id=>document.getElementById(id).value='');
-      document.getElementById('ws').value='';document.getElementById('wr').value='';
-      renderAll();showToast('Added to waiting list');
-    }).catch(e=>showErr('Error: '+e.message));
+    .then(d=>{waitlist.push({...data,id:d.id});['wn','wa','wsu','wno'].forEach(id=>document.getElementById(id).value='');document.getElementById('ws').value='';document.getElementById('wr').value='';renderAll();showToast('Added to waiting list');})
+    .catch(e=>showErr('Error: '+e.message));
 }
-
 function addWaiterFromModal(){
   const name=document.getElementById('mwn').value.trim();if(!name)return;
   const roomId=activeRoomId||(activeBed?roomForBed(activeBed)?.id:'');
   const data={name,age:document.getElementById('mwa').value,sex:document.getElementById('mws').value,substance:document.getElementById('mwsu').value.trim(),notes:document.getElementById('mwno').value.trim(),room:roomId||''};
   apiFetch('/api/waitlist',{method:'POST',body:JSON.stringify(data)})
-    .then(d=>{
-      waitlist.push({...data,id:d.id});
-      ['mwn','mwa','mwsu','mwno'].forEach(id=>document.getElementById(id).value='');
-      document.getElementById('mws').value='';
-      renderAll();
-      if(roomId) renderModalWaitlist(roomId);
-      showToast('Added to waitlist');
-    }).catch(e=>showErr('Error: '+e.message));
-}
-
-function removeWaiter(id){
-  apiFetch(`/api/waitlist/${id}`,{method:'DELETE'})
-    .then(()=>{waitlist=waitlist.filter(w=>w.id!==id);renderAll();})
+    .then(d=>{waitlist.push({...data,id:d.id});['mwn','mwa','mwsu','mwno'].forEach(id=>document.getElementById(id).value='');document.getElementById('mws').value='';renderAll();if(roomId)renderModalWaitlist(roomId);showToast('Added to waitlist');})
     .catch(e=>showErr('Error: '+e.message));
 }
+function removeWaiter(id){apiFetch(`/api/waitlist/${id}`,{method:'DELETE'}).then(()=>{waitlist=waitlist.filter(w=>w.id!==id);renderAll();}).catch(e=>showErr('Error: '+e.message));}
+function removeWaiterModal(id,roomId){apiFetch(`/api/waitlist/${id}`,{method:'DELETE'}).then(()=>{waitlist=waitlist.filter(w=>w.id!==id);renderAll();renderModalWaitlist(roomId);}).catch(e=>showErr('Error: '+e.message));}
 
-function removeWaiterModal(id,roomId){
-  apiFetch(`/api/waitlist/${id}`,{method:'DELETE'})
-    .then(()=>{waitlist=waitlist.filter(w=>w.id!==id);renderAll();renderModalWaitlist(roomId);})
-    .catch(e=>showErr('Error: '+e.message));
-}
-
-document.addEventListener('keydown',e=>{if(e.key==='Escape')document.getElementById('overlay').classList.remove('open');});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){
+    document.getElementById('overlay').classList.remove('open');
+    document.getElementById('ic-overlay').classList.remove('open');
+    activeIncomingId=null;
+  }
+});
 
 const savedPw=sessionStorage.getItem('fp_pw');
 if(savedPw){
   fetch('/api/auth',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:savedPw})})
     .then(r=>r.json()).then(d=>{
-      if(d.ok){
-        pw=savedPw; role=d.role||'staff';
-        document.getElementById('login-screen').style.display='none';
-        document.getElementById('app').style.display='block';
-        applyRole();
-        loadAll();
-      }
+      if(d.ok){pw=savedPw;role=d.role||'staff';document.getElementById('login-screen').style.display='none';document.getElementById('app').style.display='block';applyRole();loadAll();}
     }).catch(()=>{});
 }
-
 populateRoomDropdown();
 </script>
 </body>
