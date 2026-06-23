@@ -312,7 +312,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
           <div class="fr"><label>Client association</label><input type="text" id="fca" placeholder="Client they support"></div>
         </div>
         <div class="r2">
-          <div class="fr"><label>Therapist</label><select id="fth"><option value="Jessi">Jessi</option><option value="Rachelle">Rachelle</option></select></div>
+          <div class="fr"><label>Therapist</label><select id="fth"><option value="">—</option><option value="Jessi">Jessi</option><option value="Rachelle">Rachelle</option></select></div>
           <div class="fr"><label>Connected?</label><select id="fco"><option value="Pending">Pending</option><option value="Yes">Yes</option><option value="No">No</option></select></div>
         </div>
         <button class="btn bs" onclick="addFamilyMember()" style="width:100%">Add family member</button>
@@ -885,6 +885,7 @@ function renderFamilyTab(){
       </div>
       <div class="virt-field"><span class="virt-label">Therapist</span>
         <select class="virt-select" ${isAdmin()?'':'disabled'} onchange="saveFamily(${f.id},'therapist',this.value)">
+          <option value="" ${!f.therapist?'selected':''}>—</option>
           <option value="Jessi" ${f.therapist==='Jessi'?'selected':''}>Jessi</option>
           <option value="Rachelle" ${f.therapist==='Rachelle'?'selected':''}>Rachelle</option>
         </select>
