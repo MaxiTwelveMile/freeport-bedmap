@@ -51,6 +51,21 @@ async function initDB() {
       room_id    TEXT,
       created_at TIMESTAMPTZ DEFAULT NOW()
     );
+    CREATE TABLE IF NOT EXISTS virtual_clients (
+      id         SERIAL PRIMARY KEY,
+      name       TEXT NOT NULL,
+      course     TEXT,
+      counsellor TEXT,
+      created_at TIMESTAMPTZ DEFAULT NOW()
+    );
+    CREATE TABLE IF NOT EXISTS family_support (
+      id                 SERIAL PRIMARY KEY,
+      name               TEXT NOT NULL,
+      client_association TEXT,
+      therapist          TEXT,
+      connected          TEXT DEFAULT 'Pending',
+      created_at         TIMESTAMPTZ DEFAULT NOW()
+    );
   `);
   console.log('Database ready');
 }
@@ -125,6 +140,98 @@ app.post('/api/waitlist', adminAuth, async (req, res) => {
 app.delete('/api/waitlist/:id', adminAuth, async (req, res) => {
   try {
     await pool.query('DELETE FROM waitlist WHERE id = $1', [req.params.id]);
+    res.json({ ok: true });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// --- Virtual clients ---
+
+app.get('/api/virtual', auth, async (req, res) => {
+  try {
+    const { rows } = await pool.query('SELECT * FROM virtual_clients ORDER BY created_at ASC');
+    res.json(rows);
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+app.post('/api/virtual', adminAuth, async (req, res) => {
+  const { name, course, counsellor } = req.body;
+  try {
+    const { rows } = await pool.query(
+      'INSERT INTO virtual_clients (name,course,counsellor) VALUES ($1,$2,$3) RETURNING id',
+      [name, course||null, counsellor||null]
+    );
+    res.json({ id: rows[0].id });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+app.put('/api/virtual/:id', adminAuth, async (req, res) => {
+  const { course, counsellor } = req.body;
+  try {
+    await pool.query(
+      'UPDATE virtual_clients SET course=$1, counsellor=$2 WHERE id=$3',
+      [course||null, counsellor||null, req.params.id]
+    );
+    res.json({ ok: true });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+app.delete('/api/virtual/:id', adminAuth, async (req, res) => {
+  try {
+    await pool.query('DELETE FROM virtual_clients WHERE id=$1', [req.params.id]);
+    res.json({ ok: true });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// --- Family support ---
+
+app.get('/api/family', auth, async (req, res) => {
+  try {
+    const { rows } = await pool.query('SELECT * FROM family_support ORDER BY created_at ASC');
+    res.json(rows);
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+app.post('/api/family', adminAuth, async (req, res) => {
+  const { name, client_association, therapist, connected } = req.body;
+  try {
+    const { rows } = await pool.query(
+      'INSERT INTO family_support (name,client_association,therapist,connected) VALUES ($1,$2,$3,$4) RETURNING id',
+      [name, client_association||null, therapist||null, connected||'Pending']
+    );
+    res.json({ id: rows[0].id });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+app.put('/api/family/:id', adminAuth, async (req, res) => {
+  const { client_association, therapist, connected } = req.body;
+  try {
+    await pool.query(
+      'UPDATE family_support SET client_association=$1, therapist=$2, connected=$3 WHERE id=$4',
+      [client_association||null, therapist||null, connected||'Pending', req.params.id]
+    );
+    res.json({ ok: true });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+app.delete('/api/family/:id', adminAuth, async (req, res) => {
+  try {
+    await pool.query('DELETE FROM family_support WHERE id=$1', [req.params.id]);
     res.json({ ok: true });
   } catch (e) {
     res.status(500).json({ error: e.message });
