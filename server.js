@@ -56,8 +56,10 @@ async function initDB() {
       name       TEXT NOT NULL,
       course     TEXT,
       counsellor TEXT,
+      therapist  TEXT,
       created_at TIMESTAMPTZ DEFAULT NOW()
     );
+    ALTER TABLE virtual_clients ADD COLUMN IF NOT EXISTS therapist TEXT;
     CREATE TABLE IF NOT EXISTS family_support (
       id                 SERIAL PRIMARY KEY,
       name               TEXT NOT NULL,
@@ -185,11 +187,11 @@ app.get('/api/virtual', auth, async (req, res) => {
 });
 
 app.post('/api/virtual', adminAuth, async (req, res) => {
-  const { name, course, counsellor } = req.body;
+  const { name, course, counsellor, therapist } = req.body;
   try {
     const { rows } = await pool.query(
-      'INSERT INTO virtual_clients (name,course,counsellor) VALUES ($1,$2,$3) RETURNING id',
-      [name, course||null, counsellor||null]
+      'INSERT INTO virtual_clients (name,course,counsellor,therapist) VALUES ($1,$2,$3,$4) RETURNING id',
+      [name, course||null, counsellor||null, therapist||null]
     );
     res.json({ id: rows[0].id });
   } catch (e) {
@@ -198,11 +200,11 @@ app.post('/api/virtual', adminAuth, async (req, res) => {
 });
 
 app.put('/api/virtual/:id', adminAuth, async (req, res) => {
-  const { name, course, counsellor } = req.body;
+  const { name, course, counsellor, therapist } = req.body;
   try {
     await pool.query(
-      'UPDATE virtual_clients SET name=COALESCE($1,name), course=$2, counsellor=$3 WHERE id=$4',
-      [name||null, course||null, counsellor||null, req.params.id]
+      'UPDATE virtual_clients SET name=COALESCE($1,name), course=$2, counsellor=$3, therapist=$4 WHERE id=$5',
+      [name||null, course||null, counsellor||null, therapist||null, req.params.id]
     );
     res.json({ ok: true });
   } catch (e) {

@@ -307,6 +307,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
           <div class="fr"><label>Course</label><select id="vc"><option value="Independent Study">Independent Study</option><option value="Guided Recovery">Guided Recovery</option><option value="Total Renewal">Total Renewal</option></select></div>
         </div>
         <div class="fr"><label>Counsellor</label><input type="text" id="vco" placeholder="Counsellor name"></div>
+        <div class="fr"><label>Therapist</label><input type="text" id="vth" placeholder="Therapist name"></div>
         <button class="btn bs" onclick="addVirtualClient()" style="width:100%">Add client</button>
       </div>
       <div id="vt-list"></div>
@@ -445,13 +446,15 @@ const INCOMING_TASKS=[
   ]},
   {key:'invoice_1',        label:'Invoice 1: made and sent',                  subs:[]},
   {key:'pre_intake_forms', label:'Pre-intake forms / Packing List',           subs:[]},
+  {key:'fyi_file_open',    label:'FYI File Open',                             subs:[
+    {key:'intake_exit',      label:'Intake and exit assigned'},
+    {key:'crm_notes',        label:'Transfer pertinent CRM notes'},
+  ]},
   {key:'fyi_demographics', label:'FYI: Demographics',                         subs:[]},
   {key:'nursing_assigned', label:'Nursing Team Assigned',                     subs:[
     {key:'nursing_notified', label:'Nursing notified of pre-intake call'},
   ]},
-  {key:'fyi_file_open',    label:'FYI File Open',                             subs:[
-    {key:'intake_exit',      label:'Intake and exit assigned'},
-  ]},
+  {key:'notify_leads',     label:'Notify Leads and Nurses to delete CRM notes', subs:[]},
   {key:'contract',         label:'Contract: made and sent',                   subs:[]},
   {key:'fyi_contract',     label:'FYI: Contract uploaded',                    subs:[]},
   {key:'invoice_2',        label:'Invoice 2: made and sent',                  subs:[]},
@@ -895,20 +898,24 @@ function renderVirtualTab(){
         <input class="virt-input" type="text" value="${v.counsellor||''}" placeholder="Name…" ${isAdmin()?'':'disabled'}
           onblur="saveVirtual(${v.id},'counsellor',this.value)">
       </div>
+      <div class="virt-field"><span class="virt-label">Therapist</span>
+        <input class="virt-input" type="text" value="${v.therapist||''}" placeholder="Name…" ${isAdmin()?'':'disabled'}
+          onblur="saveVirtual(${v.id},'therapist',this.value)">
+      </div>
       ${isAdmin()?`<button class="virt-del" onclick="removeVirtualClient(${v.id})"><i class="ti ti-x"></i></button>`:''}
     </div>`).join('');
 }
 function showAddVirtForm(){const f=document.getElementById('add-virt-form');f.style.display=f.style.display==='none'?'block':'none';}
 function addVirtualClient(){
   const name=document.getElementById('vn').value.trim();if(!name)return;
-  const data={name,course:document.getElementById('vc').value,counsellor:document.getElementById('vco').value.trim()};
+  const data={name,course:document.getElementById('vc').value,counsellor:document.getElementById('vco').value.trim(),therapist:document.getElementById('vth').value.trim()};
   apiFetch('/api/virtual',{method:'POST',body:JSON.stringify(data)})
-    .then(d=>{virtualClients.push({...data,id:d.id});document.getElementById('vn').value='';document.getElementById('vco').value='';document.getElementById('add-virt-form').style.display='none';renderVirtualTab();document.getElementById('vt-badge').textContent=virtualClients.length;showToast('Virtual client added');})
+    .then(d=>{virtualClients.push({...data,id:d.id});document.getElementById('vn').value='';document.getElementById('vco').value='';document.getElementById('vth').value='';document.getElementById('add-virt-form').style.display='none';renderVirtualTab();document.getElementById('vt-badge').textContent=virtualClients.length;showToast('Virtual client added');})
     .catch(e=>showErr('Error: '+e.message));
 }
 function saveVirtual(id,field,value){
   const v=virtualClients.find(x=>x.id===id);if(!v)return;v[field]=value;
-  apiFetch(`/api/virtual/${id}`,{method:'PUT',body:JSON.stringify({name:v.name,course:v.course,counsellor:v.counsellor})})
+  apiFetch(`/api/virtual/${id}`,{method:'PUT',body:JSON.stringify({name:v.name,course:v.course,counsellor:v.counsellor,therapist:v.therapist})})
     .then(()=>showToast('Saved')).catch(e=>showErr('Save failed: '+e.message));
 }
 function removeVirtualClient(id){
