@@ -71,8 +71,10 @@ async function initDB() {
     CREATE TABLE IF NOT EXISTS incoming_clients (
       id         SERIAL PRIMARY KEY,
       name       TEXT NOT NULL,
+      room_id    TEXT,
       created_at TIMESTAMPTZ DEFAULT NOW()
     );
+    ALTER TABLE incoming_clients ADD COLUMN IF NOT EXISTS room_id TEXT;
     CREATE TABLE IF NOT EXISTS incoming_checklist (
       id         SERIAL PRIMARY KEY,
       client_id  INTEGER NOT NULL,
@@ -272,7 +274,7 @@ app.delete('/api/family/:id', adminAuth, async (req, res) => {
 app.get('/api/incoming', auth, async (req, res) => {
   try {
     const { rows } = await pool.query(`
-      SELECT ic.id, ic.name, ic.created_at,
+      SELECT ic.id, ic.name, ic.room_id, ic.created_at,
         COALESCE((SELECT COUNT(*) FROM incoming_checklist WHERE client_id=ic.id AND completed=true AND task_key NOT LIKE 'custom_%'),0)::int AS std_done,
         COALESCE((SELECT COUNT(*) FROM incoming_checklist WHERE client_id=ic.id AND completed=true AND task_key LIKE 'custom_%'),0)::int AS custom_done,
         COALESCE((SELECT COUNT(*) FROM incoming_checklist WHERE client_id=ic.id AND task_key LIKE 'custom_%'),0)::int AS custom_total
@@ -291,9 +293,12 @@ app.post('/api/incoming', adminAuth, async (req, res) => {
 });
 
 app.put('/api/incoming/:id', adminAuth, async (req, res) => {
-  const { name } = req.body;
+  const { name, room_id } = req.body;
   try {
-    await pool.query('UPDATE incoming_clients SET name=$1 WHERE id=$2', [name, req.params.id]);
+    await pool.query(
+      'UPDATE incoming_clients SET name=COALESCE($1,name), room_id=$2 WHERE id=$3',
+      [name||null, room_id||null, req.params.id]
+    );
     res.json({ ok: true });
   } catch (e) { res.status(500).json({ error: e.message }); }
 });

@@ -117,6 +117,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .ic-name-input{background:transparent;border:1px solid transparent;border-radius:6px;padding:3px 6px;font-size:14px;font-weight:600;color:#222;font-family:inherit;width:100%;box-sizing:border-box}
 .ic-name-input:focus{outline:none;border-color:#4f8ef7;background:#fff}
 .ic-name-input:disabled{cursor:default;color:#222}
+.ic-room-sel{background:#f4f5f7;border:1px solid #e0e4ea;border-radius:6px;padding:4px 8px;font-size:12px;color:#555;font-family:inherit;flex-shrink:0}
+.ic-room-sel:disabled{cursor:default;background:transparent;border-color:transparent;color:#555}
 .wl-empty{font-size:12px;color:#aaa;text-align:center;padding:16px 0;font-style:italic}
 .add-form{background:#f8f7f5;border:0.5px solid #eee;border-radius:12px;padding:.75rem;margin-bottom:12px}
 .add-form-title{font-size:12px;font-weight:600;color:#666;margin-bottom:10px}
@@ -355,7 +357,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
         <div class="fr"><label>Sex</label><select id="fs"><option value="">—</option><option value="M">Male</option><option value="F">Female</option><option value="NB">Non-binary</option></select></div>
         <div class="fr"><label>Age</label><input type="number" id="fa" placeholder="Age" min="1" max="120"></div>
       </div>
-      <div class="fr"><label>Substance of use</label><input type="text" id="fsu" placeholder="e.g. Alcohol, Opioids…"></div>
+      <div class="fr"><label>Rate</label><select id="fsu">
+        <option value="">— Select rate —</option>
+        <optgroup label="Private"><option>Private: Full</option><option>Private: Discount</option><option>Private: Sponsored</option></optgroup>
+        <optgroup label="Double"><option>Double: Full</option><option>Double: Discount</option><option>Double: Sponsored</option></optgroup>
+        <optgroup label="Dorm"><option>Dorm: Full</option><option>Dorm: Discount</option><option>Dorm: Sponsored</option></optgroup>
+      </select></div>
       <div class="r2">
         <div class="fr"><label>Intake date</label><input type="date" id="fi"></div>
         <div class="fr"><label>Exit date</label><input type="date" id="fe"></div>
@@ -448,13 +455,13 @@ const INCOMING_TASKS=[
   {key:'pre_intake_forms', label:'Pre-intake forms / Packing List',           subs:[]},
   {key:'fyi_file_open',    label:'FYI File Open',                             subs:[
     {key:'intake_exit',      label:'Intake and exit assigned'},
-    {key:'crm_notes',        label:'Transfer pertinent CRM notes'},
+    {key:'crm_notes',        label:'Transfer notes from CRM (If applicable)'},
   ]},
   {key:'fyi_demographics', label:'FYI: Demographics',                         subs:[]},
   {key:'nursing_assigned', label:'Nursing Team Assigned',                     subs:[
     {key:'nursing_notified', label:'Nursing notified of pre-intake call'},
   ]},
-  {key:'notify_leads',     label:'Notify Leads and Nurses to delete CRM notes', subs:[]},
+  {key:'notify_leads',     label:'Inform intake team that notes have been moved to FYI', subs:[]},
   {key:'contract',         label:'Contract: made and sent',                   subs:[]},
   {key:'fyi_contract',     label:'FYI: Contract uploaded',                    subs:[]},
   {key:'invoice_2',        label:'Invoice 2: made and sent',                  subs:[]},
@@ -575,7 +582,7 @@ function renderClientList(){
     room.beds.forEach(bedId=>{
       const c=clients[bedId];
       if(!c||!c.name)return;
-      if(q&&!c.name.toLowerCase().includes(q)&&!room.name.toLowerCase().includes(q)&&!(c.substance||'').toLowerCase().includes(q))return;
+      if(q&&!c.name.toLowerCase().includes(q)&&!room.name.toLowerCase().includes(q)&&!(c.substance||'').toLowerCase().includes(q)&&!(c.rate||'').toLowerCase().includes(q))return;
       entries.push({bedId,c,room});
     });
   });
@@ -594,7 +601,7 @@ function renderClientList(){
       <div class="cr-avatar${avatarCls}">${initials(c.name)}</div>
       <div class="cr-info">
         <div class="cr-name">${sexBadge}${c.name}${c.age?', '+c.age:''}</div>
-        <div class="cr-meta">${c.substance||'<span style="color:#bbb;font-style:italic">Substance not listed</span>'}${c.intake?' · In: '+c.intake:''}</div>
+        <div class="cr-meta">${c.substance||'<span style="color:#bbb;font-style:italic">Rate not set</span>'}${c.intake?' · In: '+c.intake:''}</div>
       </div>
       <div class="cr-right${rtCls}"><div class="cr-room">${room.name}</div><div class="cr-days">${daysStr}</div></div>
     </div>`;
@@ -698,6 +705,9 @@ function renderIncomingTab(){
           onclick="event.stopPropagation()" onblur="saveIncomingName(${c.id},this.value)">
         <div class="ic-prog-text">${done} of ${total} tasks complete</div>
       </div>
+      <select class="ic-room-sel" onclick="event.stopPropagation()" onchange="saveIncomingRoom(${c.id},this.value)" ${isAdmin()?'':'disabled'}>
+        ${roomOptions(c.room_id)}
+      </select>
       <div class="ic-prog-wrap"><div class="ic-prog-bar" style="width:${pct}%"></div></div>
       <span class="ic-status ${statusCls}">${statusLbl}</span>
       ${isAdmin()?`<button class="virt-del" onclick="removeIncomingClient(event,${c.id})" aria-label="Remove"><i class="ti ti-x"></i></button>`:''}
@@ -741,6 +751,12 @@ function saveIncomingName(id,value){
   const c=incomingClients.find(x=>x.id===id);if(!c||c.name===name)return;
   c.name=name;
   apiFetch(`/api/incoming/${id}`,{method:'PUT',body:JSON.stringify({name})})
+    .then(()=>showToast('Saved')).catch(e=>showErr('Save failed: '+e.message));
+}
+function saveIncomingRoom(id,room_id){
+  const c=incomingClients.find(x=>x.id===id);if(!c)return;
+  c.room_id=room_id||null;
+  apiFetch(`/api/incoming/${id}`,{method:'PUT',body:JSON.stringify({room_id:room_id||null})})
     .then(()=>showToast('Saved')).catch(e=>showErr('Save failed: '+e.message));
 }
 
